@@ -1,0 +1,143 @@
+<div class="modal-overlay" *ngIf="isVisible" (click)="onBackdropClick($event)">
+  <div class="modal-container">
+    <!-- Modal Header -->
+    <div class="modal-header">
+      <h2 class="modal-title">
+        <span class="modal-icon">🏠</span>
+        Add New Rental
+      </h2>
+      <button class="close-btn" (click)="closeModalHandler()">
+        <span class="close-icon">×</span>
+      </button>
+    </div>
+
+    <!-- Modal Content -->
+    <div class="modal-content">
+      <!-- Loading State -->
+      <div *ngIf="loading" class="loading-container">
+        <div class="loading-spinner"></div>
+        <p>Loading available units...</p>
+      </div>
+
+      <!-- Main Form -->
+      <form *ngIf="!loading" [formGroup]="rentalForm" (ngSubmit)="onSubmit()">
+        <!-- Available Units Section -->
+        <div class="form-section">
+          <h3 class="section-title">
+            <span class="section-icon">🏠</span>
+            Select Available Unit
+          </h3>
+          
+          <div *ngIf="availableUnits.length === 0" class="empty-state">
+            <span class="empty-icon">🏠</span>
+            <h4>No Available Units</h4>
+            <p>There are currently no available units for rental.</p>
+          </div>
+          
+          <div *ngIf="availableUnits.length > 0" class="units-grid">
+            <div *ngFor="let unit of availableUnits; trackBy: trackByUid" 
+                 class="unit-card" 
+                 [class.selected]="rentalForm.get('unitSectionUid')?.value === unit.uid"
+                 (click)="rentalForm.patchValue({unitSectionUid: unit.uid})">
+              <div class="unit-header">
+                <h4 class="unit-name">{{ unit.name }}</h4>
+                <span class="unit-price">{{ unit.currency }} {{ unit.price }}</span>
+              </div>
+              <div class="unit-details">
+                <div class="unit-detail">
+                  <span class="detail-label">Building</span>
+                  <span class="detail-value">{{ unit.unitName }}</span>
+                </div>
+                <!-- <div class="unit-detail">
+                  <span class="detail-label">Currency</span>
+                  <span class="detail-value">{{ unit.currency }}</span>
+                </div> -->
+                <div *ngIf="unit.roomDtos && unit.roomDtos.length > 0" class="unit-detail">
+                  <span class="detail-label">Rooms</span>
+                  <span class="detail-value">{{ unit.roomDtos.length }} rooms</span>
+                </div>
+              </div>
+              <div class="selection-indicator">
+                <span *ngIf="rentalForm.get('unitSectionUid')?.value === unit.uid" class="selected-icon">✓</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Rental Dates Section -->
+        <div *ngIf="availableUnits.length > 0" class="form-section">
+          <h3 class="section-title">
+            <span class="section-icon">📅</span>
+            Rental Period
+          </h3>
+          
+          <div class="dates-grid">
+            <div class="form-group">
+              <label for="startDate" class="form-label">Start Date</label>
+              <input 
+                type="date" 
+                id="startDate"
+                class="form-control"
+                formControlName="startDate"
+                [class.is-invalid]="rentalForm.get('startDate')?.invalid && rentalForm.get('startDate')?.touched">
+              <div *ngIf="rentalForm.get('startDate')?.invalid && rentalForm.get('startDate')?.touched" 
+                   class="invalid-feedback">Start date is required</div>
+            </div>
+            
+            <div class="form-group">
+              <label for="endDate" class="form-label">End Date</label>
+              <input 
+                type="date" 
+                id="endDate"
+                class="form-control"
+                formControlName="endDate"
+                [class.is-invalid]="rentalForm.get('endDate')?.invalid && rentalForm.get('endDate')?.touched">
+              <div *ngIf="rentalForm.get('endDate')?.invalid && rentalForm.get('endDate')?.touched" 
+                   class="invalid-feedback">End date is required</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Selected Unit Summary -->
+        <div *ngIf="getSelectedUnit()" class="summary-section">
+          <h3 class="section-title">
+            <span class="section-icon">📋</span>
+            Rental Summary
+          </h3>
+          <div class="summary-card">
+            <div class="summary-item">
+              <span class="summary-label">Selected Unit:</span>
+              <span class="summary-value">{{ getSelectedUnit()?.name }}</span>
+            </div>
+            <div class="summary-item">
+              <span class="summary-label">Building:</span>
+              <span class="summary-value">{{ getSelectedUnit()?.unitName }}</span>
+            </div>
+            <div class="summary-item">
+              <span class="summary-label">Monthly Rent:</span>
+              <span class="summary-value price">{{ getSelectedUnit()?.currency }} {{ getSelectedUnit()?.price || 0 }} </span>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="modal-footer">
+      <button 
+        type="button" 
+        class="btn btn-secondary"
+        (click)="closeModalHandler()">
+        Cancel
+      </button>
+      <button 
+        type="button" 
+        class="btn btn-primary"
+        [disabled]="rentalForm.invalid || submitting || availableUnits.length === 0"
+        (click)="onSubmit()">
+        <span *ngIf="submitting" class="spinner"></span>
+        {{ submitting ? 'Creating Rental...' : 'Create Rental' }}
+      </button>
+    </div>
+  </div>
+</div>

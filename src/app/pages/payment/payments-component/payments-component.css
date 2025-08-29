@@ -1,0 +1,127 @@
+/* Table styles */
+.table-responsive {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Mat table styles */
+.mat-mdc-table {
+  width: 100%;
+  max-width: 100%;
+  margin-bottom: 1rem;
+  background-color: transparent;
+  border-collapse: collapse;
+}
+
+.mat-mdc-header-cell {
+  font-weight: 600;
+  color: #495057;
+  background-color: #f8f9fa;
+  border-bottom: 2px solid #dee2e6;
+  padding: 1rem;
+}
+
+.mat-mdc-cell {
+  padding: 1rem;
+  vertical-align: middle;
+  border-top: 1px solid #dee2e6;
+}
+
+/* Status badges */
+.badge {
+  display: inline-block;
+  padding: 0.35em 0.65em;
+  font-size: 0.75em;
+  font-weight: 700;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: 0.25rem;
+  text-transform: capitalize;
+}
+
+/* Action buttons */
+.mat-mdc-button-base {
+  margin: 0 2px;
+}
+
+/* Actions column formatting */
+.actions-col {
+  width: 96px;
+  text-align: center;
+}
+.actions-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+/* Pagination */
+.mat-mdc-paginator {
+  background-color: #f8f9fa;
+  border-top: 1px solid #dee2e6;
+}
+
+/* Card styles */
+.card {
+  border: 1px solid rgba(0, 0, 0, 0.125);
+  border-radius: 0.25rem;
+  overflow: hidden;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .mat-mdc-cell, .mat-mdc-header-cell {
+    padding: 0.5rem;
+    font-size: 0.875rem;
+  }
+  .actions-col { width: 80px; }
+  .actions-cell { gap: 4px; }
+  
+  .mat-mdc-button-base {
+    min-width: 32px;
+    padding: 0 8px;
+  }
+  
+  .mat-mdc-icon-button {
+    width: 32px;
+    height: 32px;
+    line-height: 32px;
+  }
+}
+
+/* Loading spinner */
+.spinner-border {
+  width: 3rem;
+  height: 3rem;
+}
+
+/* Status colors */
+.bg-success {
+  background-color: #198754 !important;
+  color: white;
+}
+
+.bg-warning {
+  background-color: #ffc107 !important;
+  color: #212529;
+}
+
+.bg-danger {
+  background-color: #dc3545 !important;
+  color: white;
+}
+
+.bg-info {
+  background-color: #0dcaf0 !important;
+  color: #000;
+}
+
+.bg-secondary {
+  background-color: #6c757d !important;
+  color: white;
+}

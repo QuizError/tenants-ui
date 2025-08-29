@@ -1,0 +1,19 @@
+.view-bill-container { padding: 1rem; }
+.header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+.btn { background: #6366f1; color: #fff; border: none; padding: 0.5rem 0.75rem; border-radius: 6px; cursor: pointer; font-weight: 600; }
+.btn:hover { background: #4f46e5; }
+
+.card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1rem; box-shadow: 0 1px 2px rgba(0,0,0,0.04); }
+.row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; margin-bottom: 1rem; }
+.item { display: flex; flex-direction: column; gap: 0.25rem; }
+.label { font-size: 0.75rem; color: #6b7280; text-transform: uppercase; letter-spacing: 0.05em; }
+.value { font-weight: 600; color: #111827; }
+.status { padding: 0.25rem 0.5rem; border-radius: 999px; font-size: 0.75rem; font-weight: 600; }
+.status.paid { background: #dcfce7; color: #166534; }
+.status.unpaid { background: #fee2e2; color: #991b1b; }
+.loading, .error { color: #6b7280; padding: 1rem 0; }
+.error { color: #991b1b; }
+
+@media (max-width: 640px) {
+  .row { grid-template-columns: 1fr; }
+}

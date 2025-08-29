@@ -1,0 +1,29 @@
+.vertical-nav {
+    height: 100vh;
+    border-right: 1px solid #ddd;
+}
+
+.navbar {
+    background: #fff;
+    z-index: 1000;
+}
+
+.navbar .nav-link {
+    color: #000;
+}
+
+.btn-outline-dark {
+    border-radius: 0;
+}
+
+@media (max-width: 768px) {
+    .vertical-nav {
+        height: auto;
+    }
+}
+.hover-shadow:hover {
+  background-color: #f8f9fa;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  transition: all 0.2s ease-in-out;
+}
+

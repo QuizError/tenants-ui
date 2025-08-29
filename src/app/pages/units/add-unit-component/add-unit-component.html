@@ -1,0 +1,34 @@
+<div class="container mt-5">
+  <div class="card shadow-sm rounded-4 p-4">
+    <h5 class="fw-bold mb-4">Add New Unit</h5>
+
+    <form (submit)="onSubmit()" [formGroup]="addPropertyUnitForm">
+      <div class="row g-3">
+        
+        <!-- Property Name -->
+        <div class="col-md-6">
+          <label class="form-label fw-semibold">Unit Name</label>
+          <input type="text" class="form-control rounded-pill shadow-sm" formControlName="name" required>
+        </div>
+
+        <!-- Location -->
+        <div class="col-md-6">
+          <label class="form-label fw-semibold">Description</label>
+          <input type="text" class="form-control rounded-pill shadow-sm"  formControlName="descriptions" required>
+        </div>
+        <input type="hidden" class="form-control rounded-pill shadow-sm"  formControlName="propertyUid" required>
+
+      </div>
+
+      <!-- Buttons -->
+      <div class="d-flex justify-content-end gap-2 mt-4">
+        <button type="button" class="btn btn-outline-secondary rounded-pill px-4 shadow-sm" (click)="onCancel()">
+          <i class="bi bi-x-circle"></i> Cancel
+        </button>
+        <button type="submit" class="btn btn-success rounded-pill px-4 shadow-sm">
+          <i class="bi bi-check-circle"></i> Save
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

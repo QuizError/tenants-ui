@@ -1,0 +1,41 @@
+<div class="bills-container">
+  <h2>Bills</h2>
+
+  <div *ngIf="loading" class="loading">Loading bills...</div>
+  <div *ngIf="!loading && !bills.length" class="empty">No bills found.</div>
+
+  <div *ngIf="!loading && bills.length">
+    <table class="bills-table">
+      <thead>
+        <tr>
+          <th class="idx">#</th>
+          <th>Customer</th>
+          <th>Amount</th>
+          <th>Amount Due</th>
+          <th>Created</th>
+          <th>Bill Type</th>
+          <th>Status</th>
+          <th class="actions">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let bill of bills; let i = index">
+          <td class="idx">{{ i + 1 }}</td>
+          <td>{{ bill.customerName || '—' }}</td>
+          <td>{{ (bill.totalAMount || bill.totalEquivalentAmount) | number }} {{ bill.currency }}</td>
+          <td>{{ bill.amountDue | number }} {{ bill.currency }}</td>
+          <td>{{ bill.createdAt | date:'yyyy-MM-dd' }}</td>
+          <td>{{ bill.billType }}</td>
+          <td>
+            <span class="status" [class.paid]="bill.billStatus==='Paid'" [class.unpaid]="bill.billStatus!=='Paid'">
+              {{ bill.billStatus || 'Unknown' }}
+            </span>
+          </td>
+          <td class="actions">
+            <a [routerLink]="['/bills', bill.uid]" class="btn">View</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

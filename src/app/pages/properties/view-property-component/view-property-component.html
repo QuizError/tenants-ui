@@ -1,0 +1,46 @@
+<div class="container mt-5">
+  <div class="card shadow-sm rounded-4 p-4">
+    <h5 class="fw-bold mb-4">Details</h5>
+
+      <div class="row g-3">
+        
+        <div class="col-md-4">
+          <label class="form-label fw-semibold">Property Name</label>
+          <p>{{propertyData?.data?.name}}</p>
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label fw-semibold">Ownership Type</label>
+          <p>{{propertyData?.data?.ownershipType}}</p>
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label fw-semibold">Location</label>
+          <p>{{propertyData?.data?.location}}</p>
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label fw-semibold">Functional Status</label>
+          <p>{{propertyData?.data?.functionStatus}}</p>
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label fw-semibold">Start Operations</label>
+          <p>{{propertyData?.data?.startFunction}}</p>
+        </div>
+
+      </div>
+
+      <div class="row g-3">
+        <app-units-component [propertyUid]="propertyData?.data?.uid">
+
+        </app-units-component>
+      </div>
+
+      <div class="d-flex justify-content-end gap-2 mt-4">
+        <button type="button" class="btn btn-outline-secondary rounded-pill px-4 shadow-sm" (click)="onCancel()">
+          <i class="bi bi-x-circle"></i> Cancel
+        </button>
+      </div>
+  </div>
+</div> 

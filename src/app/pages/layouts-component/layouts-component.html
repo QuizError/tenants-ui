@@ -1,0 +1,74 @@
+<div class="row g-0 vh-100"> <!-- Full height -->
+
+  <!-- Vertical Sidebar -->
+  <div class="col-md-3 col-lg-2 p-0">
+    <div class="d-flex flex-column bg-white h-100 shadow-sm" id="sidebar">
+      
+      <!-- Sidebar Header -->
+      <div class="py-4 px-3 mb-4 bg-secondary text-white text-center rounded-bottom">
+        <h4 class="m-0 fw-bold">TMIS</h4>
+      </div>
+
+      <!-- Sidebar Menu -->
+      <ul class="nav flex-column px-2">
+        <li class="nav-item mb-2">
+          <a routerLink="/dashboard" class="nav-link d-flex align-items-center text-dark rounded px-3 py-2 hover-shadow">
+            <i class="fa fa-th-large me-3 text-primary"></i> Home
+          </a>
+        </li>
+        <li class="nav-item mb-2">
+          <a routerLink="/ownership-groups" class="nav-link d-flex align-items-center text-dark rounded px-3 py-2 hover-shadow">
+            <i class="fa fa-address-card me-3 text-primary"></i> My Groups
+          </a>
+        </li>
+        <li class="nav-item mb-2">
+          <a routerLink="/properties" class="nav-link d-flex align-items-center text-dark rounded px-3 py-2 hover-shadow">
+            <i class="fa fa-building me-3 text-primary"></i> Properties
+          </a>
+        </li>
+        <li class="nav-item mb-2">
+          <a routerLink="/clients" class="nav-link d-flex align-items-center text-dark rounded px-3 py-2 hover-shadow">
+            <i class="fa fa-building me-3 text-primary"></i> Clients
+          </a>
+        </li>
+        <li class="nav-item mb-2">
+          <a routerLink="/bills" class="nav-link d-flex align-items-center text-dark rounded px-3 py-2 hover-shadow">
+            <i class="fa fa-building me-3 text-primary"></i> Bills
+          </a>
+        </li>
+        <li class="nav-item mb-2">
+          <a routerLink="/payments" class="nav-link d-flex align-items-center text-dark rounded px-3 py-2 hover-shadow">
+            <i class="fa fa-building me-3 text-primary"></i> Payments
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="col-md-9 col-lg-10 ms-auto d-flex flex-column">
+
+    <!-- Top Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm px-4">
+      <a class="navbar-brand fw-bold" routerLink="/dashboard">
+        Welcome {{user?.fullName}}
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse justify-content-end" id="navbarContent">
+        <button class="btn btn-outline-primary fw-bold rounded-pill">
+          <a routerLink="/" class="text-decoration-none text-secondary fw-bold">Logout</a>
+        </button>
+      </div>
+    </nav>
+
+    <!-- Page Content -->
+    <div class="p-4 flex-grow-1 bg-light">
+      <router-outlet></router-outlet>
+    </div>
+
+  </div>
+
+</div>

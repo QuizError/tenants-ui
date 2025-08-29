@@ -1,0 +1,45 @@
+/* Main layout */
+.sidenav-container {
+  height: calc(100vh - 64px);
+  background-color: #f5f5f5;
+}
+
+/* Sidebar */
+.sidenav {
+  width: 250px;
+  box-shadow: 3px 0 6px rgba(0, 0, 0, 0.24);
+  background-color: white;
+}
+
+/* Content area */
+.content {
+  padding: 20px;
+  min-height: 100%;
+}
+
+/* Toolbar spacing */
+.spacer {
+  flex: 1 1 auto;
+}
+
+/* Menu items */
+.menu-label {
+  margin-left: 8px;
+}
+
+/* Active route indicator */
+.active {
+  background-color: rgba(0, 0, 0, 0.04);
+  font-weight: 500;
+}
+
+/* Responsive adjustments */
+@media (max-width: 599px) {
+  .sidenav {
+    width: 80%;
+  }
+  
+  .sidenav-container {
+    height: calc(100vh - 56px); /* Adjust for smaller toolbar on mobile */
+  }
+}

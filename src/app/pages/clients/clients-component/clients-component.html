@@ -1,0 +1,141 @@
+<div class="container-fluid p-4">
+  <div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h5 class="text-dark fw-semibold mb-0">My Clients</h5>
+            <button class="btn btn-sm btn-outline-primary rounded-pill shadow-sm" (click)="onAddNewClient()">
+              <i class="fa fa-plus me-2"></i> Add New Client
+            </button>
+          </div>
+
+      <!-- Loading State -->
+      <div *ngIf="loading" class="text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="mt-3 text-muted">Loading clients...</p>
+      </div>
+
+      <!-- Error State -->
+      <div *ngIf="error" class="alert alert-danger" role="alert">
+        <i class="fa fa-exclamation-triangle me-2"></i>{{ error }}
+        <button class="btn btn-sm btn-outline-danger ms-3" (click)="loadClients()">
+          <i class="fa fa-refresh me-1"></i>Retry
+        </button>
+      </div>
+
+      <!-- Empty State -->
+      <div *ngIf="!loading && !error && clients.length === 0" class="text-center py-5">
+        <i class="fa fa-users fa-3x text-muted mb-3"></i>
+        <h4 class="text-muted">No Clients Found</h4>
+        <p class="text-muted">You haven't added any clients yet.</p>
+        <button class="btn btn-primary">
+          <i class="fa fa-plus me-2"></i>Add Your First Client
+        </button>
+      </div>
+
+      <!-- Clients List -->
+      <div *ngIf="!loading && !error && clients.length > 0" class="row">
+        <div class="col-12">
+          <div class="card shadow-sm">
+            <div class="card-body p-0">
+              <!-- Pagination controls: top -->
+              <div class="d-flex justify-content-between align-items-center px-3 py-2 border-bottom">
+                <div class="d-flex align-items-center gap-2">
+                  <label class="mb-0 me-2 small text-muted">Rows per page</label>
+                  <select class="form-select form-select-sm" style="width:auto" (change)="setPageSize(+$any($event.target).value)">
+                    <option *ngFor="let opt of pageSizeOptions" [selected]="opt===pageSize" [value]="opt">{{ opt }}</option>
+                  </select>
+                </div>
+                <div class="small text-muted">
+                  Showing {{ pageStartIndex + 1 }}–{{ pageEndIndex }} of {{ totalItems }}
+                </div>
+                <div class="btn-group btn-group-sm" role="group">
+                  <button class="btn btn-outline-secondary" (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 1">Prev</button>
+                  <span class="btn btn-light disabled">Page {{ currentPage }} / {{ totalPages }}</span>
+                  <button class="btn btn-outline-secondary" (click)="goToPage(currentPage + 1)" [disabled]="currentPage === totalPages">Next</button>
+                </div>
+              </div>
+              <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                  <thead class="table-light">
+                    <tr>
+                      <th scope="col" class="px-4 py-3">Name</th>
+                      <th scope="col" class="px-4 py-3">Email</th>
+                      <th scope="col" class="px-4 py-3">Phone</th>
+                      <th scope="col" class="px-4 py-3">ID Number</th>
+                      <th scope="col" class="px-4 py-3">Gender</th>
+                      <th scope="col" class="px-4 py-3 text-center">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let client of pagedClients" class="align-middle">
+                      <td class="px-4 py-3">
+                        <div class="d-flex align-items-center">
+                          <div class="avatar-circle me-3">
+                            {{ (client.user.firstname.charAt(0) || '') + (client.user.lastname.charAt(0) || '') }}
+                          </div>
+                          <div>
+                            <div class="fw-semibold">{{ client.user.firstname }} {{ client.user.lastname }}</div>
+                            <small class="text-muted" *ngIf="client.user.middleName">{{ client.user.middleName }}</small>
+                          </div>
+                        </div>
+                      </td>
+                      <td class="px-4 py-3">
+                        <span class="text-muted">{{ client.user.email || 'N/A' }}</span>
+                      </td>
+                      <td class="px-4 py-3">
+                        <span class="text-muted">{{ client.user.msisdn || 'N/A' }}</span>
+                      </td>
+                      <td class="px-4 py-3">
+                        <span class="text-muted">{{ client.user.idNumber || 'N/A' }}</span>
+                      </td>
+                      <td class="px-4 py-3">
+                        <span class="text-muted">{{ client.user.gender || 'N/A' }}</span>
+                      </td>
+                      <td class="px-4 py-3 text-center">
+                        <a class="btn btn-sm btn-primary" [routerLink]="['/clients', client.uid]" title="View Client">
+                          <i class="fa fa-eye me-1"></i>View
+                        </a>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <!-- Pagination controls: bottom -->
+              <div class="d-flex justify-content-between align-items-center px-3 py-2 border-top">
+                <div class="small text-muted">
+                  Showing {{ pageStartIndex + 1 }}–{{ pageEndIndex }} of {{ totalItems }}
+                </div>
+                <div class="btn-group btn-group-sm" role="group">
+                  <button class="btn btn-outline-secondary" (click)="goToPage(1)" [disabled]="currentPage === 1">First</button>
+                  <button class="btn btn-outline-secondary" (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 1">Prev</button>
+                  <span class="btn btn-light disabled">Page {{ currentPage }} / {{ totalPages }}</span>
+                  <button class="btn btn-outline-secondary" (click)="goToPage(currentPage + 1)" [disabled]="currentPage === totalPages">Next</button>
+                  <button class="btn btn-outline-secondary" (click)="goToPage(totalPages)" [disabled]="currentPage === totalPages">Last</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Summary Card -->
+      <div *ngIf="!loading && !error && clients.length > 0" class="row mt-3">
+        <div class="col-md-3 col-sm-6">
+          <div class="card border-0 shadow-sm rounded-3 bg-gradient bg-primary text-white">
+            <div class="card-body py-3 px-3 d-flex align-items-center">
+              <div class="rounded-circle bg-white d-flex align-items-center justify-content-center me-3" style="width:40px; height:40px;">
+                <i class="fa fa-users text-white"></i>
+              </div>
+              <div>
+                <small class="text-white-100">Total Clients</small>
+                <h5 class="mb-0 fw-semibold">{{ clients.length }}</h5>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>      
+    </div>
+  </div>
+</div>

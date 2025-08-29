@@ -1,0 +1,238 @@
+<div class="unit-sections-container">
+  <div class="header-section">
+    <div class="header-left">
+      <button class="back-btn" (click)="goBackToProperty()">
+        ← Back to Property
+      </button>
+      <h2>{{ unitName || 'Unit: ' + unitUid }}</h2>
+    </div>
+    <button class="add-section-btn" (click)="addSection()">
+      + Add Section
+    </button>
+  </div>
+  
+  <!-- Debug Info -->
+  <!-- <div class="debug-info">
+    <p><strong>Debug:</strong> Unit UID: {{ unitUid }}</p>
+    <p><strong>Loading:</strong> {{ loading }}</p>
+    <p><strong>Error:</strong> {{ error }}</p>
+    <p><strong>Sections Count:</strong> {{ unitSections.length }}</p>
+  </div> -->
+  
+  <!-- Loading State -->
+  @if (loading) {
+    <div class="loading">
+      <p>Loading unit sections...</p>
+    </div>
+  }
+  
+  <!-- Error State -->
+  @if (error) {
+    <div class="error">
+      <p>{{ error }}</p>
+      <button (click)="loadUnitSections()" class="retry-btn">Retry</button>
+    </div>
+  }
+  
+  <!-- Unit Sections List -->
+  @if (!loading && !error && unitSections.length > 0) {
+    <div class="sections-grid">
+      @for (section of unitSections; track section.uid) {
+        <div class="section-card">
+          <div class="section-header">
+            <h3>{{ section.name }}</h3>
+            <span class="availability-badge" [class.available]="section.available" [class.unavailable]="!section.available">
+              {{ section.available ? 'Available' : 'Unavailable' }}
+            </span>
+          </div>
+          
+          <div class="section-details">
+            <p><strong>Price:</strong> {{ section.price | number:'1.2-2' }} {{ section.currency }}</p>
+            <p><strong>Water Meter:</strong> {{ section.waterMeter || '—' }}</p>
+            <p><strong>Electricity Meter:</strong> {{ section.electricityMeter || '—' }}</p>
+          </div>
+          
+          <div class="rooms-section">
+            <h4>Rooms</h4>
+            <!-- Debug: Show raw room data -->
+            <!-- <pre>{{ section.roomDtos | json }}</pre> -->
+            <div class="rooms-grid">
+              @for (room of section.roomDtos; track room.room + '_' + room.count + '_' + $index) {
+                <div class="room-item">
+                  <span class="room-count">{{ room.count }}</span>
+                  <span class="room-type">{{ room.room }}</span>
+                </div>
+              }
+              @empty {
+                <p>No rooms defined for this section</p>
+              }
+            </div>
+          </div>
+          
+          <div class="section-actions">
+            <button class="update-section-btn" (click)="updateSection(section.uid)">
+              Edit
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  }
+  
+  <!-- No Data State -->
+  @if (!loading && !error && unitSections.length === 0) {
+    <div class="no-data">
+      <p>No unit sections found for this unit.</p>
+    </div>
+  }
+</div>
+
+<!-- Add Section Modal -->
+@if (showAddModal) {
+  <div class="modal-overlay" (click)="closeAddModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Add New Section</h3>
+        <button class="close-btn" (click)="closeAddModal()">×</button>
+      </div>
+      
+      <form class="section-form">
+        <div class="form-group">
+          <label for="sectionName">Section Name</label>
+          <input type="text" id="sectionName" name="sectionName" [(ngModel)]="newSection.name" placeholder="e.g., Wing A" required>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="sectionPrice">Price</label>
+            <input type="number" id="sectionPrice" name="sectionPrice" [(ngModel)]="newSection.price" placeholder="0" required>
+          </div>
+          <div class="form-group">
+            <label for="sectionCurrency">Currency</label>
+            <select id="sectionCurrency" name="sectionCurrency" [(ngModel)]="newSection.currency">
+              <option value="TZS">TZS</option>
+              <option value="USD">USD</option>
+              <option value="EUR">EUR</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label>
+            <input type="checkbox" name="sectionAvailable" [(ngModel)]="newSection.available">
+            Available for rent
+          </label>
+        </div>
+        
+        <div class="form-group">
+          <label for="waterMeter">Water Meter</label>
+          <input type="text" id="waterMeter" name="waterMeter" [(ngModel)]="newSection.waterMeter" placeholder="e.g., WM-12345">
+        </div>
+        
+        <div class="form-group">
+          <label for="electricityMeter">Electricity Meter</label>
+          <input type="text" id="electricityMeter" name="electricityMeter" [(ngModel)]="newSection.electricityMeter" placeholder="e.g., EM-67890">
+        </div>
+        
+        <div class="rooms-section">
+          <div class="rooms-header">
+            <h4>Rooms</h4>
+            <button type="button" class="add-room-btn" (click)="addRoom(newSection)">+ Add Room</button>
+          </div>
+          
+          @for (room of newSection.roomDtos; track $index) {
+            <div class="room-form-item">
+              <select [(ngModel)]="room.room" name="roomType{{$index}}">
+                @for (roomType of availableRoomTypes; track roomType) {
+                  <option [value]="roomType">{{ roomType }}</option>
+                }
+              </select>
+              <input type="number" [(ngModel)]="room.count" name="roomCount{{$index}}" min="1" placeholder="Count">
+              <button type="button" class="remove-room-btn" (click)="removeRoom(newSection, $index)">×</button>
+            </div>
+          }
+        </div>
+        
+        <div class="modal-actions">
+          <button type="button" class="cancel-btn" (click)="closeAddModal()">Cancel</button>
+          <button type="button" class="save-btn" (click)="saveNewSection()">Save Section</button>
+        </div>
+      </form>
+    </div>
+  </div>
+}
+
+<!-- Update Section Modal -->
+@if (showUpdateModal) {
+  <div class="modal-overlay" (click)="closeUpdateModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Update Section</h3>
+        <button class="close-btn" (click)="closeUpdateModal()">×</button>
+      </div>
+      
+      <form class="section-form">
+        <div class="form-group">
+          <label for="editSectionName">Section Name</label>
+          <input type="text" id="editSectionName" name="editSectionName" [(ngModel)]="editingSection.name" placeholder="e.g., Wing A" required>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="editSectionPrice">Price</label>
+            <input type="number" id="editSectionPrice" name="editSectionPrice" [(ngModel)]="editingSection.price" placeholder="0" required>
+          </div>
+          <div class="form-group">
+            <label for="editSectionCurrency">Currency</label>
+            <select id="editSectionCurrency" name="editSectionCurrency" [(ngModel)]="editingSection.currency">
+              <option value="TZS">TZS</option>
+              <option value="USD">USD</option>
+              <option value="EUR">EUR</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label>
+            <input type="checkbox" name="editSectionAvailable" [(ngModel)]="editingSection.available">
+            Available for rent
+          </label>
+        </div>
+        
+        <div class="form-group">
+          <label for="editWaterMeter">Water Meter</label>
+          <input type="text" id="editWaterMeter" name="editWaterMeter" [(ngModel)]="editingSection.waterMeter" placeholder="e.g., WM-12345">
+        </div>
+        
+        <div class="form-group">
+          <label for="editElectricityMeter">Electricity Meter</label>
+          <input type="text" id="editElectricityMeter" name="editElectricityMeter" [(ngModel)]="editingSection.electricityMeter" placeholder="e.g., EM-67890">
+        </div>
+        
+        <div class="rooms-section">
+          <div class="rooms-header">
+            <h4>Rooms</h4>
+            <button type="button" class="add-room-btn" (click)="addRoom(editingSection)">+ Add Room</button>
+          </div>
+          
+          @for (room of editingSection.roomDtos; track $index) {
+            <div class="room-form-item">
+              <select [(ngModel)]="room.room" name="editRoomType{{$index}}">
+                @for (roomType of availableRoomTypes; track roomType) {
+                  <option [value]="roomType">{{ roomType }}</option>
+                }
+              </select>
+              <input type="number" [(ngModel)]="room.count" name="editRoomCount{{$index}}" min="1" placeholder="Count">
+              <button type="button" class="remove-room-btn" (click)="removeRoom(editingSection, $index)">×</button>
+            </div>
+          }
+        </div>
+        
+        <div class="modal-actions">
+          <button type="button" class="cancel-btn" (click)="closeUpdateModal()">Cancel</button>
+          <button type="button" class="save-btn" (click)="saveUpdatedSection()">Update Section</button>
+        </div>
+      </form>
+    </div>
+  </div>
+}

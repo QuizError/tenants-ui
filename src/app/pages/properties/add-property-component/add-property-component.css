@@ -1,0 +1,7 @@
+input[type="date"]::-webkit-calendar-picker-indicator {
+  background: url('https://cdn-icons-png.flaticon.com/512/747/747310.png') no-repeat center;
+  background-size: 20px 20px;
+  color: transparent;
+  cursor: pointer;
+  opacity: 0.7;
+}

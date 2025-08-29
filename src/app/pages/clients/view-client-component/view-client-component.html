@@ -1,0 +1,262 @@
+<div class="view-client-container">
+  <!-- Header Section -->
+  <div class="header-section">
+    <button class="back-btn" (click)="goBack()">
+      <span class="back-icon">←</span>
+      Back
+    </button>
+    <h1 class="page-title">Client Profile</h1>
+  </div>
+
+  <!-- Loading State -->
+  @if (!clientData && loading) {
+    <div class="loading-container">
+      <div class="loading-spinner"></div>
+      <p>Loading client information...</p>
+    </div>
+  }
+
+  <!-- Client Information -->
+  @if (clientData) {
+    <div class="client-details-card">
+    <!-- Client Header -->
+    <div class="client-header">
+      <div class="client-avatar">
+        {{ getInitials(clientData.user.firstname, clientData.user.lastname) }}
+      </div>
+      <div class="client-basic-info">
+        <h2 class="client-name">
+          {{ clientData.user.firstname }} {{ clientData.user.middleName }} {{ clientData.user.lastname }}
+        </h2>
+      </div>
+      <div class="client-actions">
+        <button class="btn-edit" (click)="editClient()">Edit</button>
+        <button class="btn-delete" (click)="deleteClient()">Delete</button>
+      </div>
+    </div>
+
+      <!-- Client Details Grid -->
+      <div class="details-grid">
+        <!-- Personal Information -->
+        <div class="info-card">
+          <div class="card-header">
+            <span class="card-icon">👤</span>
+            <h3 class="card-title">Personal Info</h3>
+          </div>
+          <div class="info-grid">
+            <div class="info-item">
+              <span class="info-label">Name</span>
+              <span class="info-value">{{ clientData.user.firstname }} {{ clientData.user.lastname }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Birth Date</span>
+              <span class="info-value">{{ formatDate(clientData.dob) }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Gender</span>
+              <span class="info-value">{{ clientData.user.gender }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">ID Number</span>
+              <span class="info-value">{{ clientData.user.idNumber }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Contact Information -->
+        <div class="info-card">
+          <div class="card-header">
+            <span class="card-icon">📞</span>
+            <h3 class="card-title">Contact</h3>
+          </div>
+          <div class="info-grid">
+            <div class="info-item">
+              <span class="info-label">Email</span>
+              <span class="info-value email">{{ clientData.user.email }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Phone</span>
+              <span class="info-value phone">{{ clientData.user.msisdn }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Current Rentals -->
+        <div class="info-card rooms-section">
+          <div class="card-header">
+            <span class="card-icon">🏠</span>
+            <h3 class="card-title">Current Rentals</h3>
+            <button class="add-btn" (click)="addRental()">+ Add</button>
+          </div>
+
+          @if (loadingRentals) {
+            <div class="loading-rentals">
+              <div class="loading-spinner"></div>
+              <span>Loading rentals...</span>
+            </div>
+          } @else if (rentalError) {
+            <div class="error-message">
+              {{ rentalError }}
+              <button class="retry-btn" (click)="loadClientRentals()">Retry</button>
+            </div>
+          } @else if (getCurrentRentals().length > 0) {
+            <div class="rentals-list">
+              @for (rental of getCurrentRentals(); track rental.uid) {
+                <div class="rental-item">
+                  <div class="rental-header">
+                    <div>
+                      <h4 class="rental-unit">{{ rental.unitName || rental.unitSectionName || 'Unit' }}</h4>
+                      <div class="rental-subtitle" *ngIf="rental.unitSectionName">
+                        {{ rental.unitSectionName }}
+                      </div>
+                    </div>
+                    <div class="status-badges">
+                      <span class="badge" [ngClass]="getPaymentStatusClass(rental.billStatus)">
+                        {{ rental.billStatus || 'WaitingForPayment' }}
+                      </span>
+                      <span class="badge" [ngClass]="getRentalStateClass(rental.rentalStatus)">
+                        {{ (rental.rentalStatus || 'ACTIVE') | titlecase }}
+                      </span>
+                      <button
+                        class="icon-btn"
+                        *ngIf="isEligibleForContract(rental)"
+                        (click)="viewContract(rental.uid)"
+                        title="View Contract"
+                        aria-label="View Contract"
+                      >
+                        👁️
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="rental-details">
+                    <div class="rental-period-price">
+                      <div class="rental-period">
+                        <span class="detail-label">Period:</span>
+                        <span class="detail-value">
+                          {{ rental.startDate | date:'mediumDate' }} - {{ rental.endDate | date:'mediumDate' }}
+                        </span>
+                      </div>
+                      <div class="rental-price">
+                        <span class="detail-label">Price:</span>
+                        <span class="detail-value">
+                          {{ (rental.price ?? 0) | number:'1.0-2' }} {{ rental.currency || 'TZS' }}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              }
+            </div>
+          } @else {
+            <div class="no-rentals">
+              <p>No current rentals</p>
+            </div>
+          }
+        </div>
+
+
+
+        <!-- Reported Damages -->
+        <div class="info-card damages-section">
+          <div class="card-header">
+            <span class="card-icon">⚠️</span>
+            <h3 class="card-title">Damages</h3>
+            <button class="add-btn danger" (click)="reportDamage()">+ Report</button>
+          </div>
+          @if (clientData.damages && clientData.damages.length > 0) {
+            @for (damage of clientData.damages; track damage.id) {
+              <div class="damage-card">
+                <div class="damage-header">
+                  <h4 class="damage-title">{{ damage.title }}</h4>
+                  <div class="damage-badges">
+                    <span class="severity-badge" [ngClass]="getDamageSeverityClass(damage.severity)">
+                      {{ damage.severity }}
+                    </span>
+                    <span class="reporter-badge" [ngClass]="getReporterClass(damage.reportedBy)">
+                      {{ damage.reportedBy === 'client' ? 'Client' : 'Manager' }}
+                    </span>
+                  </div>
+                </div>
+                <p class="damage-description">{{ damage.description }}</p>
+                <div class="damage-info">
+                  <div class="damage-detail">
+                    <span class="detail-label">Room</span>
+                    <span class="detail-value">{{ damage.roomName }}</span>
+                  </div>
+                  <div class="damage-detail">
+                    <span class="detail-label">Reported</span>
+                    <span class="detail-value">{{ formatDate(damage.reportedDate) }}</span>
+                  </div>
+                  @if (damage.estimatedCost) {
+                    <div class="damage-detail">
+                      <span class="detail-label">Cost</span>
+                      <span class="detail-value cost">{{ formatCurrency(damage.estimatedCost) }}</span>
+                    </div>
+                  }
+                  <div class="damage-detail">
+                    <span class="detail-label">Status</span>
+                    <span class="detail-value" [ngClass]="getDamageStatusClass(damage.status)">
+                      {{ damage.status }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            }
+          } @else {
+            <div class="empty-state">
+              <span class="empty-icon">✅</span>
+              <p>No reported damages</p>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Add Rental Modal -->
+  <app-add-rental-modal
+    [isVisible]="showAddRentalModal"
+    [clientUid]="clientUid || ''"
+    (closeModal)="onCloseRentalModal()"
+    (rentalAdded)="onRentalAdded($event)">
+  </app-add-rental-modal>
+
+  @if (showContractModal) {
+    <div class="tenant-modal-backdrop" (click)="closeContract()"></div>
+    <div class="tenant-modal" role="dialog" aria-modal="true" aria-labelledby="contractTitle">
+      <div class="tenant-modal-header">
+        <h3 id="contractTitle">Tenancy Confirmation</h3>
+        <button class="tenant-close-btn" (click)="closeContract()" aria-label="Close">&times;</button>
+      </div>
+      <div class="tenant-modal-body">
+        @if (contractLoading) {
+          <div class="loading-rentals">
+            <div class="loading-spinner"></div>
+            <span>Loading contract...</span>
+          </div>
+        } @else if (contractError) {
+          <div class="error-message">{{ contractError }}</div>
+        } @else {
+          <div id="tenant-certificate">
+            <p class="tenant-contract-text">{{ contractText }}</p>
+          </div>
+        }
+      </div>
+      <div class="tenant-modal-footer">
+        <button class="btn-primary" (click)="printContract()">Print</button>
+        <button class="tenant-btn-secondary" (click)="closeContract()">Close</button>
+      </div>
+    </div>
+  }
+
+  <!-- Error State -->
+  @if (!clientData && !loading) {
+    <div class="error-container">
+      <div class="error-icon">😔</div>
+      <h3>Client Not Found</h3>
+      <p>The requested client could not be found or may have been deleted.</p>
+      <button class="btn-primary" (click)="goBack()">Return to Clients</button>
+    </div>
+  }
+</div>

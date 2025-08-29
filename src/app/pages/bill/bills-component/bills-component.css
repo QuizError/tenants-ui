@@ -1,0 +1,30 @@
+.bills-container { padding: 1rem; }
+.h2 { margin-bottom: 1rem; }
+.loading, .empty { color: #666; padding: 0.5rem 0; }
+
+.bills-table { width: 100%; border-collapse: collapse; background: #fff; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden; }
+.bills-table thead th { text-align: left; background: #f9fafb; border-bottom: 1px solid #e5e7eb; padding: 0.75rem 1rem; font-weight: 600; color: #374151; }
+.bills-table tbody td { padding: 0.75rem 1rem; border-bottom: 1px solid #f3f4f6; color: #111827; }
+.bills-table tbody tr:hover { background: #f9fafb; }
+
+.status { padding: 0.2rem 0.5rem; border-radius: 999px; font-size: 0.75rem; font-weight: 600; }
+.status.paid { background: #dcfce7; color: #166534; }
+.status.unpaid { background: #fee2e2; color: #991b1b; }
+
+.actions { width: 1%; white-space: nowrap; }
+.btn { background: #6366f1; color: white; padding: 0.35rem 0.6rem; border-radius: 6px; text-decoration: none; font-weight: 600; display: inline-block; }
+.btn:hover { background: #4f46e5; }
+
+@media (max-width: 640px) {
+  .bills-table thead { display: none; }
+  .bills-table, .bills-table tbody, .bills-table tr, .bills-table td { display: block; width: 100%; }
+  .bills-table tr { margin-bottom: 0.75rem; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden; }
+  .bills-table td { border: none; border-bottom: 1px solid #f3f4f6; position: relative; padding-left: 50%; }
+  .bills-table td:before { position: absolute; left: 0.75rem; width: 45%; padding-right: 0.5rem; white-space: nowrap; color: #6b7280; font-weight: 600; }
+  .bills-table td:nth-of-type(1):before { content: 'Created'; }
+  .bills-table td:nth-of-type(2):before { content: 'Amount'; }
+  .bills-table td:nth-of-type(3):before { content: 'Amount Due'; }
+  .bills-table td:nth-of-type(4):before { content: 'Bill Type'; }
+  .bills-table td:nth-of-type(5):before { content: 'Status'; }
+  .bills-table td:nth-of-type(6):before { content: 'Actions'; }
+}

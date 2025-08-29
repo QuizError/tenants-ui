@@ -1,0 +1,131 @@
+<div class="view-bill-container" *ngIf="!loading; else loadingTpl">
+  <ng-container *ngIf="bill; else errorTpl">
+    <div class="header">
+      <h2>Bill Details</h2>
+      <button class="btn" (click)="back()">Back to Bills</button>
+    </div>
+
+    <div class="card">
+      <div class="row">
+        <div class="item">
+          <div class="label">Billed Customer</div>
+          <div class="value">{{ bill.customerName || 'N/A' }}</div>
+        </div>
+        <div class="item">
+          <div class="label">Payment Receipt Number</div>
+          <div class="value">{{ bill.thirdPartyReference || 'N/A' }}</div>
+        </div>
+        <div class="item">
+          <div class="label">Status</div>
+          <div class="value"><span class="status" [class.paid]="bill.billStatus==='Paid'" [class.unpaid]="bill.billStatus!=='Paid'">{{ bill.billStatus || 'Unknown' }}</span></div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="item">
+            <div class="label">Total Bill Amount</div>
+            <div class="value">{{ bill.totalAMount || bill.totalEquivalentAmount | number }} {{ bill.currency }}</div>
+        </div>
+        <div class="item">
+          <div class="label">Amount Due</div>
+          <div class="value">{{ bill.amountDue }}</div>
+        </div>
+        <div class="item">
+            <div class="label">Bill Type</div>
+            <div class="value">{{ bill.billType }}</div>
+          </div>
+      </div>
+
+      <div class="row">
+        <div class="item">
+          <div class="label">Paid Amount</div>
+          <div class="value">{{ bill.paidAmount || bill.paidAmount | number }} {{ bill.currency }}</div>
+        </div>
+        <div class="item">
+          <div class="label">Software Commission</div>
+          <div class="value">{{ bill.commission | number }} {{ bill.currency }}</div>
+        </div>
+        <div class="item">
+          <div class="label">Agent Fee</div>
+          <div class="value">{{ bill.agentFee | number }} {{ bill.currency }}</div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="item description" style="grid-column: span 2;">
+          <div class="label">Bill Description</div>
+          <div class="value">{{ bill.billDescription }}</div>
+        </div>
+      </div>
+      <div class="row" *ngIf="isWaitingForPayment()">
+        <div class="item" style="grid-column: span 2; display: flex; align-items: center; justify-content:flex-end; gap: 12px;">
+          <button class="btn btn-primary" (click)="openPaymentModal()" [disabled]="makingPayment">
+            Make Payment
+          </button>
+          <span class="text-danger" *ngIf="paymentError">{{ paymentError }}</span>
+        </div>
+      </div>
+    </div>
+    <!-- Payment Modal -->
+    <div *ngIf="showPaymentModal" class="modal-backdrop" style="position:fixed; inset:0; background:rgba(0,0,0,0.4); display:flex; align-items:center; justify-content:center; z-index:1000;">
+      <div class="modal-card" style="background:#fff; border-radius:8px; width:min(560px, 94vw); box-shadow:0 10px 30px rgba(0,0,0,0.25);">
+        <div style="padding:16px 20px; border-bottom:1px solid #eee; display:flex; align-items:center; justify-content:space-between;">
+          <h3 style="margin:0; font-size:18px;">Receive Payment</h3>
+          <button class="btn" (click)="closePaymentModal()">Close</button>
+        </div>
+        <form (ngSubmit)="submitPayment()" style="padding:16px 20px;">
+          <div class="row" style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+            <div class="item" style="display:flex; flex-direction:column;">
+              <label class="label">Bill Reference</label>
+              <input class="form-control" name="billReferenceNumber" [(ngModel)]="paymentForm.billReferenceNumber" readonly />
+            </div>
+            <div class="item" style="display:flex; flex-direction:column;">
+              <label class="label">Paid Amount</label>
+              <input type="number" class="form-control" name="paidAmount" [(ngModel)]="paymentForm.paidAmount" min="0" required />
+            </div>
+            <div class="item" style="display:flex; flex-direction:column;">
+              <label class="label">Payment Channel</label>
+              <select class="form-control" name="paymentChannel" [(ngModel)]="paymentForm.paymentChannel" required>
+                <option value="CASH">Cash</option>
+                <option value="BANK">Bank</option>
+                <option value="MOBILE">Mobile</option>
+              </select>
+            </div>
+            <div class="item" style="display:flex; flex-direction:column;">
+              <label class="label">Third Party Ref</label>
+              <input class="form-control" name="thirdPartyReference" [(ngModel)]="paymentForm.thirdPartyReference" />
+            </div>
+            <div class="item" style="display:flex; flex-direction:column;">
+              <label class="label">FSP Name</label>
+              <input class="form-control" name="fspName" [(ngModel)]="paymentForm.fspName" />
+            </div>
+            <div class="item" style="display:flex; flex-direction:column;">
+              <label class="label">FSP Code</label>
+              <input class="form-control" name="fspCode" [(ngModel)]="paymentForm.fspCode" />
+            </div>
+            <div class="item" style="display:flex; flex-direction:column;">
+              <label class="label">Currency</label>
+              <input class="form-control" name="currency" [(ngModel)]="paymentForm.currency" />
+            </div>
+          </div>
+          <div style="display:flex; align-items:center; justify-content:flex-end; gap:10px; margin-top:16px;">
+            <span class="text-danger" *ngIf="paymentError">{{ paymentError }}</span>
+            <button type="button" class="btn" (click)="closePaymentModal()">Cancel</button>
+            <button type="submit" class="btn btn-primary" [disabled]="makingPayment">
+              {{ makingPayment ? 'Submitting...' : 'Submit Payment' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </ng-container>
+</div>
+
+<ng-template #loadingTpl>
+  <div class="loading">Loading bill...</div>
+</ng-template>
+
+<ng-template #errorTpl>
+  <div class="error">{{ error || 'Failed to load bill' }}</div>
+  <button class="btn" (click)="back()">Back to Bills</button>
+</ng-template>

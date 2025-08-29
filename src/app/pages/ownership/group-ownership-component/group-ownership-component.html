@@ -1,0 +1,25 @@
+<div class="container mt-5">
+  <div class="table-container">
+    <h5 class="mb-4">My Groups in Ownership</h5>
+    <table class="table table-hover table-striped align-middle">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Group Name</th>
+          <th>Ownership Type</th>
+          <th>Active Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (group of groupsData; track $index) {
+        <tr>
+          <td>1</td>
+          <td>{{group.name}}</td>
+          <td>{{group.ownershipType}}</td>
+          <td>{{group.active ? 'ACTIVE':'NOT ACTIVE'}}</td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>
