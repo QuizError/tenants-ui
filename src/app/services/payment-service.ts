@@ -1,25 +1,26 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Payment } from '../interfaces/payment';
+import { ConfigService } from './config.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PaymentService {
-  
-  baseUrl = "http://localhost:9231/payments"
+  private baseUrl: string;
 
-  constructor(private http: HttpClient) { }
+  constructor(
+    private http: HttpClient,
+    private configService: ConfigService
+  ) {
+    this.baseUrl = this.configService.getApiUrl('payments');
+  }
   
-    getPaymentsData(){
-      return this.http.get<Payment []>(this.baseUrl);
-    }
-  
-    savePaymentData(data: Payment){
-      return this.http.post(`${this.baseUrl}/receive-payment`,data);
-    }
-  
-    getPaymentByUid(uid: string) {
-      return this.http.get<Payment>(`${this.baseUrl}/${uid}`);
-    }
+  getPaymentsData() {
+    return this.http.get<Payment[]>(this.baseUrl);
+  }
+
+  savePaymentData(data: Payment) {
+    return this.http.post(`${this.baseUrl}/receive-payment`, data);
+  }
 }

@@ -47,8 +47,17 @@ export class ViewPaymentComponent implements OnInit {
   }
 
   loadPayment(uid: string): void {
+    this.loading = true;
+    this.error = null;
+    
     this.paymentService.getPaymentByUid(uid).subscribe({
       next: (payment) => {
+        if (!payment) {
+          this.error = 'Payment not found';
+          this.loading = false;
+          return;
+        }
+        
         this.payment = payment;
         if (payment.billUid) {
           this.loadBill(payment.billUid);
@@ -59,6 +68,9 @@ export class ViewPaymentComponent implements OnInit {
       error: (err) => {
         console.error('Error loading payment:', err);
         this.error = 'Failed to load payment details';
+        if (err.status === 404) {
+          this.error = 'Payment not found';
+        }
         this.loading = false;
       }
     });
@@ -68,11 +80,12 @@ export class ViewPaymentComponent implements OnInit {
     this.billService.getBillByUid(uid).subscribe({
       next: (bill) => {
         this.bill = bill;
-        this.loading = false;
       },
       error: (err) => {
         console.error('Error loading bill:', err);
-        // Continue even if bill fails to load
+        // Continue without bill information
+      },
+      complete: () => {
         this.loading = false;
       }
     });

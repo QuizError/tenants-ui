@@ -2,6 +2,8 @@ import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { PropertiesService } from '../../services/properties-service';
 import { OwnershipService } from '../../services/ownership-service';
+import { UnitSectionService } from '../../services/unit-section-service';
+import { ClientService } from '../../services/client-service';
 
 @Component({
   selector: 'app-dashboard-component',
@@ -13,9 +15,19 @@ export class DashboardComponent implements OnInit {
 
   propertiesData: any;
 
+  availableSectionData: any;
+
+  myClients: any;
+
   groupsData: any;
 
-  constructor(private propertiesService: PropertiesService, private cdr: ChangeDetectorRef , private ownershipService: OwnershipService, private router: Router){}
+  constructor(
+    private propertiesService: PropertiesService,
+    private unitSectionService: UnitSectionService, 
+    private cdr: ChangeDetectorRef , 
+    private ownershipService: OwnershipService,
+    private clientService: ClientService, 
+    private router: Router){}
 
   user:any;
 
@@ -29,6 +41,9 @@ export class DashboardComponent implements OnInit {
         this.propertiesData = JSON.parse(cachedProperties);
       }
       this.getMyProperties(this.user.uid)
+      this.getMyAvailableSections(this.user.uid)
+      this.getMyClients(this.user.uid)
+      console.log(this.user.uid)
     
     }
 
@@ -45,6 +60,23 @@ export class DashboardComponent implements OnInit {
     })
   }
 
+  getMyAvailableSections(uid:string){
+      this.unitSectionService.getAvailableUnitSectionByUserUid(uid).subscribe(res=>{
+      this.availableSectionData = res;
+      console.log(`Available section for rent are ${this.availableSectionData.length}`)   
+      this.cdr.detectChanges();
+    })
+  }
+
+  getMyClients(uid:string){
+      this.clientService.getClientsByOwnerUid(uid).subscribe(res=>{
+      this.myClients = res;
+      console.log(`My registreded clients are ${this.myClients.length}`)   
+      this.cdr.detectChanges();
+    })
+  }
+
+
   getMyGroups(uid:string){
     this.ownershipService.getMyGroupsByUserUid(uid).subscribe(res=>{
       this.groupsData = res; 
@@ -60,6 +92,10 @@ export class DashboardComponent implements OnInit {
 
   onViewGroups(){
     this.router.navigateByUrl('ownership-groups')
+  }
+
+  onViewClients(){
+    this.router.navigateByUrl('clients')
   }
 
 

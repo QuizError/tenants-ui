@@ -1,7 +1,7 @@
 export const environment = {
   production: true,
   // Update this with your production API URL
-  apiUrl: 'https://your-production-api.com/api',
+  apiUrl: 'http://62.169.19.168:9231',
   
   // API endpoints
   endpoints: {
@@ -18,7 +18,7 @@ export const environment = {
   
   // Application settings
   app: {
-    name: 'Employee Management System',
+    name: 'Tenant Management Information System',
     version: '1.0.0',
     defaultCurrency: 'TZS',
     defaultDateFormat: 'dd/MM/yyyy HH:mm'

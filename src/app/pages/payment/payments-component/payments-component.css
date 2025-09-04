@@ -46,6 +46,37 @@
   margin: 0 2px;
 }
 
+/* Action Buttons Styling */
+.action-btn {
+  min-width: 90px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 12px;
+  height: 36px;
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 0.875rem;
+  transition: all 0.2s ease-in-out;
+  border-width: 1.5px !important;
+}
+
+.action-btn mat-icon {
+  font-size: 18px;
+  height: 18px;
+  width: 18px;
+  margin-right: 4px;
+}
+
+.action-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.action-btn:active {
+  transform: translateY(0);
+}
+
 /* Actions column formatting */
 .actions-col {
   width: 96px;
@@ -57,6 +88,12 @@
   justify-content: center;
   gap: 6px;
   white-space: nowrap;
+}
+
+/* Make sure the action column has enough width */
+.mat-column-actions {
+  width: 200px;
+  padding-right: 16px;
 }
 
 /* Pagination */
@@ -91,6 +128,22 @@
     width: 32px;
     height: 32px;
     line-height: 32px;
+  }
+  
+  .action-btn {
+    min-width: 36px;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    justify-content: center;
+  }
+  
+  .action-btn span {
+    display: none;
+  }
+  
+  .action-btn mat-icon {
+    margin-right: 0;
   }
 }
 

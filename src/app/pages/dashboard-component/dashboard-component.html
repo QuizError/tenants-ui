@@ -16,8 +16,8 @@
     <div class="col-md-4">
       <div class="card shadow-sm border-0">
         <div class="card-body">
-          <h5 class="card-title">Total Units</h5>
-          <p class="card-text fs-4 fw-bold text-success">10</p>
+          <h5 class="card-title">Availble Unit Sections</h5>
+          <p class="card-text fs-4 fw-bold text-success">{{availableSectionData.length}}</p>
         </div>
         <a  class="btn btn-outline-success btn-sm">View</a>
       </div>
@@ -27,10 +27,10 @@
     <div class="col-md-4">
       <div class="card shadow-sm border-0">
         <div class="card-body">
-          <h5 class="card-title">Total Ownership Groups</h5>
-          <p class="card-text fs-4 fw-bold text-secondary">1</p>
+          <h5 class="card-title">Total Registered Clients</h5>
+          <p class="card-text fs-4 fw-bold text-secondary">{{myClients.length}}</p>
         </div>
-        <a  class="btn btn-outline-secondary btn-sm" (click)="onViewGroups()">View</a>
+        <a  class="btn btn-outline-secondary btn-sm" (click)="onViewClients()">View</a>
       </div>
     </div>
 

@@ -40,7 +40,7 @@
 
           <!-- Bill Reference Column -->
           <ng-container matColumnDef="billReferenceNumber">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Bill #</th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Bill Ref</th>
             <td mat-cell *matCellDef="let payment">
               {{ payment.billReferenceNumber || 'N/A' }}
             </td>
@@ -48,7 +48,7 @@
 
           <!-- Third Party Reference Column -->
           <ng-container matColumnDef="thirdPartyReference">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Reference</th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Payment Ref</th>
             <td mat-cell *matCellDef="let payment">
               {{ payment.thirdPartyReference || 'N/A' }}
             </td>

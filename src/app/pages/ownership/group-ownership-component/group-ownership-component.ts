@@ -26,7 +26,6 @@ export class GroupOwnershipComponent implements OnInit{
       if (cachedGroups) {
         this.groupsData = JSON.parse(cachedGroups);
       }
-
       this.getMyGroups(this.user.uid)
     }
   }
@@ -35,7 +34,8 @@ export class GroupOwnershipComponent implements OnInit{
   getMyGroups(uid:string){
     this.ownershipService.getMyGroupsByUserUid(uid).subscribe(res=>{
       this.groupsData = res; 
-      console.log(this.groupsData)  
+      console.log(this.groupsData)
+      console.log(this.groupsData.length)
       localStorage.setItem('userGroups',JSON.stringify(this.groupsData))
       this.cdr.detectChanges();
     })

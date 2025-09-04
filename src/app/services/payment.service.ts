@@ -18,7 +18,17 @@ export class PaymentService {
     size: number = environment.pagination.defaultPageSize,
     extra: Record<string, any> = {}
   ): Observable<PaymentResponse> {
-    const body = { page, size, ...extra };
+    const savedUser = localStorage.getItem('employeeApp');
+    const user = savedUser ? JSON.parse(savedUser) : null;
+    const userUid = user?.uid || '';
+    
+    const body = { 
+      page, 
+      size, 
+      userUid, 
+      ...extra 
+    };
+    
     return this.http.post<PaymentResponse>(`${this.apiUrl}/search`, body);
   }
 

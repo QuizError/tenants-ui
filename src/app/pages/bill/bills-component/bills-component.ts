@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { Bill } from '../../../interfaces/bill';
 import { BillService } from '../../../services/bill-service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-bills-component',
@@ -15,19 +16,31 @@ export class BillsComponent implements OnInit {
   bills: Bill[] = [];
   loading = false;
   error: string | null = null;
+  user: any;
 
-  constructor(private billService: BillService, private cdr: ChangeDetectorRef) {}
+  constructor(private billService: BillService, private cdr: ChangeDetectorRef, private router: Router) {}
 
   ngOnInit(): void {
+    const savedUser = localStorage.getItem('employeeApp');
+    if (savedUser) {
+      this.user = JSON.parse(savedUser);
+    }
     this.loadBills();
   }
 
   loadBills(): void {
+    if (!this.user || !this.user.uid) {
+      this.error = 'User not authenticated';
+      this.loading = false;
+      this.cdr.detectChanges();
+      return;
+    }
+
     this.loading = true;
     this.error = null;
     this.cdr.detectChanges();
 
-    this.billService.getBillsData().subscribe({
+    this.billService.getBillsData(this.user.uid).subscribe({
       next: (data: any) => {
         // Support: [] or { data: Bill[] } or { dataList: Bill[] }
         const list: Bill[] = Array.isArray(data)
@@ -46,22 +59,6 @@ export class BillsComponent implements OnInit {
   }
 
   private mockBills(): Bill[] {
-    return [
-      {
-        uid: '3f4962da-774e-45b1-b00c-28104b9d88a5',
-        createdAt: '2025-08-25T09:22:13.851416',
-        totalAMount: 2000000,
-        amountDue: 0,
-        totalEquivalentAmount: 2000000,
-        agentFee: 500000,
-        commission: 15000,
-        billReferenceNumber: '1816250825092213',
-        thirdPartyReference: 'CRDB106',
-        billDescription: 'Bill of Wing B apartment of Nyumba Two from 2025-09-01 to 2025-12-31',
-        billType: 'RENTALS',
-        currency: 'TZS',
-        billStatus: 'Paid'
-      }
-    ];
+    return [];
   }
 }

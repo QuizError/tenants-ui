@@ -1,16 +1,22 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { User } from '../interfaces/user';
 import { GroupOwnership } from '../interfaces/group-ownership';
+import { ConfigService } from './config.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
   
-  baseUrl = "http://localhost:9231/api/login"
+  private baseUrl: string;
 
-  constructor(private http: HttpClient) { }
+  constructor(
+    private http: HttpClient,
+    private configService: ConfigService
+  ) {
+    this.baseUrl = `${this.configService.apiBaseUrl}/api/login`;
+  }
 
   postLoginData(data: User){
     return this.http.post(this.baseUrl,data);
@@ -32,5 +38,3 @@ export class UserService {
     return this.http.delete(`${this.baseUrl}/${uid}`);
   }
 }
-
-
