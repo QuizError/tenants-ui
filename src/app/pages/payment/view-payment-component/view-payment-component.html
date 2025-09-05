@@ -1,10 +1,12 @@
 <div class="container mt-4">
+  <!-- Loader -->
   <ng-container *ngIf="loading">
     <div class="d-flex justify-content-center align-items-center" style="height: 300px;">
       <mat-spinner diameter="50"></mat-spinner>
     </div>
   </ng-container>
 
+  <!-- Error -->
   <ng-container *ngIf="!loading && error">
     <mat-card class="error-card">
       <mat-card-header>
@@ -20,6 +22,7 @@
     </mat-card>
   </ng-container>
 
+  <!-- Success -->
   <ng-container *ngIf="!loading && !error && payment">
     <div class="d-flex justify-content-between align-items-center mb-4">
       <h2>Payment Receipt</h2>
@@ -33,6 +36,7 @@
       </div>
     </div>
 
+    <!-- Payment Details -->
     <mat-card class="mb-4">
       <mat-card-header class="bg-light p-3">
         <mat-card-title>Payment Details</mat-card-title>
@@ -41,16 +45,7 @@
         <div class="row">
           <div class="col-md-6">
             <p><strong>Payment Reference:</strong> {{ payment?.uid || 'N/A' }}</p>
-            <p><strong>Date:</strong> {{ formatDate(payment?.paymentDate) }}</p>
-            <p><strong>Status:</strong> 
-              <span class="badge" [ngClass]="{
-                'bg-success': payment?.status === 'Paid',
-                'bg-warning': payment?.status === 'PartyPaid',
-                'bg-danger': payment?.status === 'Failed'
-              }">
-                {{ payment?.status || 'N/A' }}
-              </span>
-            </p>
+            <p><strong>Date:</strong> {{ formatDate(payment.paymentDate) }}</p>
           </div>
           <div class="col-md-6">
             <p><strong>Amount Paid:</strong> {{ payment?.paidAmount | currency:payment?.currency }}</p>
@@ -61,6 +56,7 @@
       </mat-card-content>
     </mat-card>
 
+    <!-- Bill Details -->
     <mat-card *ngIf="bill" class="mb-4">
       <mat-card-header class="bg-light p-3">
         <mat-card-title>Bill Information</mat-card-title>
@@ -72,21 +68,21 @@
             <p><strong>Description:</strong> {{ bill?.billDescription || 'N/A' }}</p>
           </div>
           <div class="col-md-6">
-            <p><strong>Total Amount:</strong> {{ bill?.totalAmount | currency:bill?.currency }}</p>
+            <p><strong>Total Amount:</strong> {{ bill?.totalAMount | currency:bill?.currency }}</p>
             <p><strong>Amount Due:</strong> {{ bill?.amountDue | currency:bill?.currency }}</p>
+            <p><strong>Status:</strong>
+              <span class="badge" [ngClass]="{
+                'bg-success': bill?.billStatus === 'Paid',
+                'bg-warning': bill?.billStatus === 'PartyPaid',
+                'bg-danger': bill?.billStatus === 'Failed'
+              }">
+                {{ bill?.billStatus || 'N/A' }}
+              </span>
+            </p>
           </div>
         </div>
       </mat-card-content>
     </mat-card>
-
-    <div class="d-flex justify-content-end mt-4">
-      <button mat-raised-button color="primary" (click)="printReceipt()" class="me-2">
-        <mat-icon>print</mat-icon> Print Receipt
-      </button>
-      <button mat-stroked-button (click)="goBack()">
-        <mat-icon>arrow_back</mat-icon> Back to Payments
-      </button>
-    </div>
   </ng-container>
 </div>
 

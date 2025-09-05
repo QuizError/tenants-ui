@@ -22,6 +22,9 @@ import { BillsComponent } from './pages/bill/bills-component/bills-component';
 import { ViewBillComponent } from './pages/bill/view-bill-component/view-bill-component';
 import { PaymentsComponent } from './pages/payment/payments-component/payments-component';
 import { ViewPaymentComponent } from './pages/payment/view-payment-component/view-payment-component';
+import { AddUnitSectionComponent } from './pages/unit-section/add-unit-section-component/add-unit-section-component';
+import { UnitSectionsComponent } from './pages/unit-section/unit-sections-component/unit-sections-component';
+import { UpdateUnitSectionComponent } from './pages/unit-section/update-unit-section-component/update-unit-section-component';
 
 export const routes: Routes = [
     {
@@ -74,12 +77,24 @@ export const routes: Routes = [
                 component: AddUnitComponent
             },
             {
-                path: 'units/update/:uid',
+                path: 'update-unit/:uid',
                 component: UpdateUnitComponent
             },
             {
                 path: 'view-unit/:uid',
                 component: ViewUnitComponent
+            },
+            {
+                path: 'unit-sections',
+                component: UnitSectionsComponent
+            },
+            {
+                path: 'add-unit-section',
+                component: AddUnitSectionComponent
+            },
+            {
+                path: 'unit-sections/update/:uid',
+                component: UpdateUnitSectionComponent
             },
             {
                 path: 'clients',

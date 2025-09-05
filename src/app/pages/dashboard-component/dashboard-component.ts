@@ -14,17 +14,17 @@ import { RentalService } from '../../services/rental-service';
 })
 export class DashboardComponent implements OnInit {
 
-  propertiesData: any;
+  propertiesData: any[] = [];
 
-  availableSectionData: any;
+  availableSectionData: any[] = [];
 
-  endindRentalsData: any;
+  endindRentalsData: any[] = [];
   
   currentMonth: string | undefined;
 
-  myClients: any;
+  myClients: any[] = [];
 
-  groupsData: any;
+  groupsData: any[] = [];
 
   constructor(
     private propertiesService: PropertiesService,
@@ -51,7 +51,7 @@ export class DashboardComponent implements OnInit {
       this.getMyClients(this.user.uid)
       this.getMyPropertiesRentalsEndingThisMonth(this.user.uid)
       this.currentMonth = this.getCurrentMonth();
-      console.log(this.user.uid)
+      // console.log(this.user.uid)
     
     }
 
@@ -62,7 +62,7 @@ export class DashboardComponent implements OnInit {
   getMyProperties(uid:string){
       this.propertiesService.getMyProprtiesByUserUid(uid).subscribe(res=>{
       this.propertiesData = res;
-      console.log(this.propertiesData.length)   
+      // console.log(this.propertiesData.length)   
       localStorage.setItem('properties', JSON.stringify(this.propertiesData));
       this.cdr.detectChanges();
     })
@@ -71,7 +71,7 @@ export class DashboardComponent implements OnInit {
   getMyAvailableSections(uid:string){
       this.unitSectionService.getAvailableUnitSectionByUserUid(uid).subscribe(res=>{
       this.availableSectionData = res;
-      console.log(`Available section for rent are ${this.availableSectionData.length}`)   
+      // console.log(`Available section for rent are ${this.availableSectionData.length}`)   
       this.cdr.detectChanges();
     })
   }
@@ -79,7 +79,7 @@ export class DashboardComponent implements OnInit {
   getMyClients(uid:string){
       this.clientService.getClientsByOwnerUid(uid).subscribe(res=>{
       this.myClients = res;
-      console.log(`My registreded clients are ${this.myClients.length}`)   
+      // console.log(`My registreded clients are ${this.myClients.length}`)   
       this.cdr.detectChanges();
     })
   }
@@ -87,7 +87,7 @@ export class DashboardComponent implements OnInit {
   getMyPropertiesRentalsEndingThisMonth(uid:string){
     this.rentalService.getPropertyRentalsEndingThisMonthByOwnerUid(uid).subscribe(res=>{
     this.endindRentalsData = res;
-    console.log(this.endindRentalsData.length)   
+    // console.log(this.endindRentalsData.length)   
     this.cdr.detectChanges();
   })
 }
@@ -96,7 +96,7 @@ export class DashboardComponent implements OnInit {
   getMyGroups(uid:string){
     this.ownershipService.getMyGroupsByUserUid(uid).subscribe(res=>{
       this.groupsData = res; 
-      console.log(this.groupsData)  
+      // console.log(this.groupsData)  
       localStorage.setItem('userGroups',JSON.stringify(this.groupsData))
       this.cdr.detectChanges();
     })
@@ -110,8 +110,8 @@ export class DashboardComponent implements OnInit {
     this.router.navigateByUrl('properties')
   }
 
-  onViewGroups(){
-    this.router.navigateByUrl('ownership-groups')
+  onViewAvailableSections(){
+    this.router.navigateByUrl('unit-sections')
   }
 
   onViewClients(){

@@ -8,6 +8,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { Payment } from '../../../interfaces/payment';
+import { Bill } from '../../../interfaces/bill';
 
 @Component({
   selector: 'app-view-payment-component',
@@ -24,8 +26,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
   styleUrls: ['./view-payment-component.css']
 })
 export class ViewPaymentComponent implements OnInit {
-  payment: any;
-  bill: any;
+  payment: Payment | null = null;
+  bill: Bill | null = null;
   loading = true;
   error: string | null = null;
 
@@ -49,15 +51,9 @@ export class ViewPaymentComponent implements OnInit {
   loadPayment(uid: string): void {
     this.loading = true;
     this.error = null;
-    
+
     this.paymentService.getPaymentByUid(uid).subscribe({
       next: (payment) => {
-        if (!payment) {
-          this.error = 'Payment not found';
-          this.loading = false;
-          return;
-        }
-        
         this.payment = payment;
         if (payment.billUid) {
           this.loadBill(payment.billUid);
@@ -68,9 +64,6 @@ export class ViewPaymentComponent implements OnInit {
       error: (err) => {
         console.error('Error loading payment:', err);
         this.error = 'Failed to load payment details';
-        if (err.status === 404) {
-          this.error = 'Payment not found';
-        }
         this.loading = false;
       }
     });
@@ -83,7 +76,6 @@ export class ViewPaymentComponent implements OnInit {
       },
       error: (err) => {
         console.error('Error loading bill:', err);
-        // Continue without bill information
       },
       complete: () => {
         this.loading = false;
@@ -93,8 +85,7 @@ export class ViewPaymentComponent implements OnInit {
 
   formatDate(dateString: string | null): string {
     if (!dateString) return 'N/A';
-    const date = new Date(dateString);
-    return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+    return new Date(dateString).toLocaleDateString();
   }
 
   goBack(): void {

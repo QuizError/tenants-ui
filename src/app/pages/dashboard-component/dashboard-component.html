@@ -19,7 +19,7 @@
           <h5 class="card-title">Availble Unit Sections</h5>
           <p class="card-text fs-4 fw-bold text-success">{{availableSectionData.length}}</p>
         </div>
-        <a  class="btn btn-outline-success btn-sm">View</a>
+        <a  class="btn btn-outline-success btn-sm" (click)="onViewAvailableSections()">View</a>
       </div>
     </div>
 
@@ -37,7 +37,7 @@
     <div class="col-md-3">
       <div class="card shadow-sm border-0">
         <div class="card-body">
-          <h5 class="card-title">Ending {{currentMonth}}</h5>
+          <h5 class="card-title">End within next 30 days</h5>
           <p class="card-text fs-4 fw-bold text-danger">{{endindRentalsData.length}}</p>
         </div>
         <a  class="btn btn-outline-danger btn-sm" (click)="onViewRentals()">View</a>
