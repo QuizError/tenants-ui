@@ -44,13 +44,13 @@
       <mat-card-content class="p-4">
         <div class="row">
           <div class="col-md-6">
-            <p><strong>Payment Reference:</strong> {{ payment?.uid || 'N/A' }}</p>
+            <p><strong>Payment Reference:</strong> {{ payment.uid || 'N/A' }}</p>
             <p><strong>Date:</strong> {{ formatDate(payment.paymentDate) }}</p>
           </div>
           <div class="col-md-6">
-            <p><strong>Amount Paid:</strong> {{ payment?.paidAmount | currency:payment?.currency }}</p>
-            <p><strong>Payment Method:</strong> {{ payment?.paymentChannel || 'N/A' }}</p>
-            <p *ngIf="payment?.fspName"><strong>Provider:</strong> {{ payment?.fspName }} ({{ payment?.fspCode }})</p>
+            <p><strong>Amount Paid:</strong> {{ payment.paidAmount | currency: payment.currency }}</p>
+            <p><strong>Payment Method:</strong> {{ payment.paymentChannel || 'N/A' }}</p>
+            <p *ngIf="payment?.fspName"><strong>Provider:</strong> {{ payment.fspName }} ({{ payment.fspCode }})</p>
           </div>
         </div>
       </mat-card-content>
@@ -64,19 +64,19 @@
       <mat-card-content class="p-4">
         <div class="row">
           <div class="col-md-6">
-            <p><strong>Bill #:</strong> {{ bill?.billReferenceNumber || 'N/A' }}</p>
-            <p><strong>Description:</strong> {{ bill?.billDescription || 'N/A' }}</p>
+            <p><strong>Bill #:</strong> {{ bill.billReferenceNumber || 'N/A' }}</p>
+            <p><strong>Description:</strong> {{ bill.billDescription || 'N/A' }}</p>
           </div>
           <div class="col-md-6">
-            <p><strong>Total Amount:</strong> {{ bill?.totalAMount | currency:bill?.currency }}</p>
-            <p><strong>Amount Due:</strong> {{ bill?.amountDue | currency:bill?.currency }}</p>
+            <p><strong>Total Amount:</strong> {{ bill.totalAMount | currency: bill.currency }}</p>
+            <p><strong>Amount Due:</strong> {{ bill.amountDue | currency: bill.currency }}</p>
             <p><strong>Status:</strong>
               <span class="badge" [ngClass]="{
-                'bg-success': bill?.billStatus === 'Paid',
-                'bg-warning': bill?.billStatus === 'PartyPaid',
-                'bg-danger': bill?.billStatus === 'Failed'
+                'bg-success': bill.billStatus === 'Paid',
+                'bg-warning': bill.billStatus === 'PartyPaid',
+                'bg-danger': bill.billStatus === 'Failed'
               }">
-                {{ bill?.billStatus || 'N/A' }}
+                {{ bill.billStatus || 'N/A' }}
               </span>
             </p>
           </div>

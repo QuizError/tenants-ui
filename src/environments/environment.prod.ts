@@ -1,7 +1,7 @@
 export const environment = {
   production: true,
   // Update this with your production API URL
-  apiUrl: 'http://62.169.19.168:9231',
+  apiUrl: 'http://backend.tmis.divinesolutions.co.tz',
   
   // API endpoints
   endpoints: {
