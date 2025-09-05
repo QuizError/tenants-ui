@@ -1,8 +1,17 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Observable, catchError, throwError } from 'rxjs';
+import { Observable, catchError, throwError, map } from 'rxjs';
 import { Payment, PaymentResponse } from '../interfaces/payment';
 import { environment } from '../../environments/environment';
+
+// Define an interface for the wrapped API response
+interface ApiResponse<T> {
+  status: boolean;
+  responseCode: number;
+  message: string;
+  data: T;
+  dataList: null;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -65,15 +74,18 @@ export class PaymentService {
   }
 
   getPaymentByUid(uid: string): Observable<Payment> {
-    try {
-      console.log('Making request to:', `${this.apiUrl}/${uid}`);
-      return this.http.get<Payment>(`${this.apiUrl}/${uid}`).pipe(
-        catchError(this.handleError)
-      );
-    } catch (error) {
-      console.error('Error in getPaymentByUid:', error);
-      return throwError(() => new Error('Failed to retrieve payment'));
-    }
+    return this.http.get<ApiResponse<Payment>>(`${this.apiUrl}/${uid}`).pipe(
+      map(response => {
+        if (!response.status || !response.data) {
+          throw new Error(response.message || 'Failed to get payment');
+        }
+        return response.data;
+      }),
+      catchError(err => {
+        console.error('Error in getPaymentByUid:', err);
+        return throwError(() => new Error('Failed to retrieve payment'));
+      })
+    );
   }
 
   createPayment(payment: Partial<Payment>): Observable<Payment> {
