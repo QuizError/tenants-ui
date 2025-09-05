@@ -4,6 +4,7 @@ import { PropertiesService } from '../../services/properties-service';
 import { OwnershipService } from '../../services/ownership-service';
 import { UnitSectionService } from '../../services/unit-section-service';
 import { ClientService } from '../../services/client-service';
+import { RentalService } from '../../services/rental-service';
 
 @Component({
   selector: 'app-dashboard-component',
@@ -17,6 +18,10 @@ export class DashboardComponent implements OnInit {
 
   availableSectionData: any;
 
+  endindRentalsData: any;
+  
+  currentMonth: string | undefined;
+
   myClients: any;
 
   groupsData: any;
@@ -27,6 +32,7 @@ export class DashboardComponent implements OnInit {
     private cdr: ChangeDetectorRef , 
     private ownershipService: OwnershipService,
     private clientService: ClientService, 
+    private rentalService: RentalService,
     private router: Router){}
 
   user:any;
@@ -43,6 +49,8 @@ export class DashboardComponent implements OnInit {
       this.getMyProperties(this.user.uid)
       this.getMyAvailableSections(this.user.uid)
       this.getMyClients(this.user.uid)
+      this.getMyPropertiesRentalsEndingThisMonth(this.user.uid)
+      this.currentMonth = this.getCurrentMonth();
       console.log(this.user.uid)
     
     }
@@ -76,6 +84,14 @@ export class DashboardComponent implements OnInit {
     })
   }
 
+  getMyPropertiesRentalsEndingThisMonth(uid:string){
+    this.rentalService.getPropertyRentalsEndingThisMonthByOwnerUid(uid).subscribe(res=>{
+    this.endindRentalsData = res;
+    console.log(this.endindRentalsData.length)   
+    this.cdr.detectChanges();
+  })
+}
+
 
   getMyGroups(uid:string){
     this.ownershipService.getMyGroupsByUserUid(uid).subscribe(res=>{
@@ -84,6 +100,10 @@ export class DashboardComponent implements OnInit {
       localStorage.setItem('userGroups',JSON.stringify(this.groupsData))
       this.cdr.detectChanges();
     })
+  }
+
+  getCurrentMonth(): string {
+    return new Date().toLocaleString('default', { month: 'long' });
   }
 
   onViewProperties(){
@@ -98,5 +118,7 @@ export class DashboardComponent implements OnInit {
     this.router.navigateByUrl('clients')
   }
 
-
+  onViewRentals(){
+    this.router.navigateByUrl('rentals')
+  }
 }

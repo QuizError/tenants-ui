@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Observable, catchError, throwError } from 'rxjs';
 import { Payment, PaymentResponse } from '../interfaces/payment';
 import { environment } from '../../environments/environment';
 
@@ -8,9 +8,13 @@ import { environment } from '../../environments/environment';
   providedIn: 'root'
 })
 export class PaymentService {
-  private readonly apiUrl = `${environment.apiUrl}${environment.endpoints.payments}`;
+  private readonly apiUrl: string;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+    // Ensure the API URL is properly constructed
+    this.apiUrl = `${environment.apiUrl}${environment.endpoints.payments}`;
+    console.log('PaymentService initialized with API URL:', this.apiUrl);
+  }
 
   // Use POST for paginated payments to accommodate backend requirements
   getPayments(
@@ -18,34 +22,96 @@ export class PaymentService {
     size: number = environment.pagination.defaultPageSize,
     extra: Record<string, any> = {}
   ): Observable<PaymentResponse> {
-    const savedUser = localStorage.getItem('employeeApp');
-    const user = savedUser ? JSON.parse(savedUser) : null;
-    const userUid = user?.uid || '';
-    
-    const body = { 
-      page, 
-      size, 
-      userUid, 
-      ...extra 
-    };
-    
-    return this.http.post<PaymentResponse>(`${this.apiUrl}/search`, body);
+    try {
+      const savedUser = localStorage.getItem('employeeApp');
+      const user = savedUser ? JSON.parse(savedUser) : null;
+      const userUid = user?.uid || '';
+      
+      const body = { 
+        page, 
+        size, 
+        userUid, 
+        ...extra 
+      };
+      
+      console.log('Making request to:', `${this.apiUrl}/search`);
+      console.log('Request body:', body);
+      
+      return this.http.post<PaymentResponse>(`${this.apiUrl}/search`, body).pipe(
+        catchError(this.handleError)
+      );
+    } catch (error) {
+      console.error('Error in getPayments:', error);
+      return throwError(() => new Error('Failed to process payments request'));
+    }
+  }
+
+  private handleError(error: HttpErrorResponse) {
+    let errorMessage = 'An error occurred';
+    if (error.error instanceof ErrorEvent) {
+      // Client-side error
+      console.error('Client-side error:', error.error.message);
+      errorMessage = `Error: ${error.error.message}`;
+    } else {
+      // Server-side error
+      console.error(
+        `Backend returned code ${error.status}, ` +
+        `body was: ${JSON.stringify(error.error)}`
+      );
+      errorMessage = `Backend returned code ${error.status}: ${error.statusText}`;
+    }
+    // Return an observable with a user-facing error message
+    return throwError(() => new Error(errorMessage));
   }
 
   getPaymentByUid(uid: string): Observable<Payment> {
-    return this.http.get<Payment>(`${this.apiUrl}/${uid}`);
+    try {
+      console.log('Making request to:', `${this.apiUrl}/${uid}`);
+      return this.http.get<Payment>(`${this.apiUrl}/${uid}`).pipe(
+        catchError(this.handleError)
+      );
+    } catch (error) {
+      console.error('Error in getPaymentByUid:', error);
+      return throwError(() => new Error('Failed to retrieve payment'));
+    }
   }
 
   createPayment(payment: Partial<Payment>): Observable<Payment> {
-    return this.http.post<Payment>(this.apiUrl, payment);
+    try {
+      console.log('Making request to:', this.apiUrl);
+      console.log('Request body:', payment);
+      return this.http.post<Payment>(this.apiUrl, payment).pipe(
+        catchError(this.handleError)
+      );
+    } catch (error) {
+      console.error('Error in createPayment:', error);
+      return throwError(() => new Error('Failed to create payment'));
+    }
   }
 
   updatePayment(uid: string, payment: Partial<Payment>): Observable<Payment> {
-    return this.http.put<Payment>(`${this.apiUrl}/${uid}`, payment);
+    try {
+      console.log('Making request to:', `${this.apiUrl}/${uid}`);
+      console.log('Request body:', payment);
+      return this.http.put<Payment>(`${this.apiUrl}/${uid}`, payment).pipe(
+        catchError(this.handleError)
+      );
+    } catch (error) {
+      console.error('Error in updatePayment:', error);
+      return throwError(() => new Error('Failed to update payment'));
+    }
   }
 
   deletePayment(uid: string): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${uid}`);
+    try {
+      console.log('Making request to:', `${this.apiUrl}/${uid}`);
+      return this.http.delete<void>(`${this.apiUrl}/${uid}`).pipe(
+        catchError(this.handleError)
+      );
+    } catch (error) {
+      console.error('Error in deletePayment:', error);
+      return throwError(() => new Error('Failed to delete payment'));
+    }
   }
 
   // Helper method to create a mock payment (for testing)

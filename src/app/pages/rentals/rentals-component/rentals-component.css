@@ -1,0 +1,10 @@
+.card-header a.btn {
+  transition: all 0.3s ease-in-out;
+}
+
+.card-header a.btn:hover {
+  background-color: #6c757d; /* Bootstrap secondary color */
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}

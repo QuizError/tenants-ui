@@ -24,6 +24,10 @@ export class RentalService {
     return this.http.get<Rental[]>(`${this.baseUrl}/owner/${uid}`);
   }
 
+  getPropertyRentalsEndingThisMonthByOwnerUid(uid: string) {
+    return this.http.get<Rental[]>(`${this.baseUrl}/contract-end/owner/${uid}`);
+  }
+
   getRentalsByClientUid(uid: string) {
     return this.http.get<Rental[]>(`${this.baseUrl}/client/${uid}`);
   }

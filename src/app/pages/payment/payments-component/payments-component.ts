@@ -11,6 +11,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { finalize } from 'rxjs/operators';
 import { Payment, PaymentResponse } from '../../../interfaces/payment';
 import { PaymentService } from '../../../services/payment.service';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-payments-component',
@@ -70,23 +71,44 @@ export class PaymentsComponent implements OnInit, AfterViewInit {
     this.error = null;
     this.cdr.detectChanges();
 
+    console.log('Loading payments...');
+    console.log(`Page: ${this.pageIndex}, Size: ${this.pageSize}`);
+
     this.paymentService.getPayments(this.pageIndex, this.pageSize)
       .pipe(
         finalize(() => {
           this.loading = false;
           this.cdr.detectChanges();
+          console.log('API call completed');
         })
       )
       .subscribe({
         next: (response: PaymentResponse) => {
+          console.log('Payments loaded successfully:', response);
           this.dataSource.data = response.content || [];
           this.totalItems = response.totalElements || 0;
           this.cdr.detectChanges();
         },
         error: (err) => {
           console.error('Error loading payments:', err);
-          this.error = 'Failed to load payments. Please try again later.';
-          this.useMockData();
+          this.error = 'Failed to load payments. ';
+          
+          if (err.status === 0) {
+            this.error += 'Unable to connect to the server. Please check your internet connection.';
+          } else if (err.status === 404) {
+            this.error += 'The requested resource was not found.';
+          } else if (err.status >= 500) {
+            this.error += 'Server error. Please try again later.';
+          } else {
+            this.error += 'Please try again later.';
+          }
+          
+          // Fall back to mock data in development
+          if (!environment.production) {
+            console.warn('Falling back to mock data');
+            this.useMockData();
+          }
+          
           this.cdr.detectChanges();
         }
       });
