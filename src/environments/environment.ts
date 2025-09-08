@@ -5,8 +5,8 @@
 export const environment = {
   production: false,
   // API base URL - update this with your development API URL
-  apiUrl: 'http://backend.tmis.divinesolutions.co.tz',
-  // apiUrl: 'http://localhost:9231',
+  // apiUrl: 'http://backend.tmis.divinesolutions.co.tz',
+  apiUrl: 'http://localhost:9231',
   
   // API endpoints
   endpoints: {

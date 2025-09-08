@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { CommonModule, formatDate } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Client } from '../../../interfaces/client';
@@ -25,7 +25,8 @@ export class UpdateClientComponent implements OnInit {
     private fb: FormBuilder,
     private clientService: ClientService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private cdr: ChangeDetectorRef
   ) {
     this.clientForm = this.fb.group({
       firstname: ['', [Validators.required, Validators.minLength(2)]],
@@ -58,24 +59,45 @@ export class UpdateClientComponent implements OnInit {
     }
   }
 
+  get showForm(): boolean {
+    return !this.loading && this.client !== null;
+  }
+
   loadClient(): void {
     this.loading = true;
+    this.error = '';
+    
     this.clientService.getClientByUid(this.clientUid).subscribe({
-      next: (client: Client) => {
-        this.client = client;
-        console.log(client)
-        this.populateForm(client);
-        this.loading = false;
+      next: (response: any) => {
+        try {
+          if (response && response.status === true && response.data) {
+            this.client = response.data;
+            this.populateForm(this.client);
+          } else {
+            this.error = response?.message || 'Invalid client data received';
+            console.error('Invalid client data structure:', response);
+          }
+        } catch (e) {
+          this.error = 'Error processing client data';
+          console.error('Error in process response:', e);
+        } finally {
+          this.loading = false;
+          this.cdr.detectChanges(); // Force change detection
+        }
       },
       error: (err) => {
-        this.error = 'Failed to load client data. Please try again.';
+        this.error = err.error?.message || 'Failed to load client data. Please try again.';
         this.loading = false;
-        console.error('Error loading client:', err);
+        this.cdr.detectChanges(); // Force change detection
+        console.error('API Error:', err);
       }
     });
   }
+  
 
-  populateForm(client: Client): void {
+  populateForm(client: Client | null): void {
+    if (!client || !client.user) return;
+    
     this.clientForm.patchValue({
       firstname: client.user.firstname,
       lastname: client.user.lastname,
@@ -85,7 +107,7 @@ export class UpdateClientComponent implements OnInit {
       idNumber: client.user.idNumber,
       gender: client.user.gender,
       occupation: client.occupation,
-      dob: client.dob
+      dob: client.dob ? formatDate(client.dob, 'yyyy-MM-dd', 'en-US') : ''
     });
   }
 
@@ -96,23 +118,23 @@ export class UpdateClientComponent implements OnInit {
       this.success = '';
 
       const formData = this.clientForm.value;
-      const updatedClient: Client = {
-        ...this.client,
-        user: {
-          ...this.client.user,
-          firstname: formData.firstname,
-          lastname: formData.lastname,
-          middleName: formData.middleName,
-          email: formData.email,
-          msisdn: formData.msisdn,
-          idNumber: formData.idNumber,
-          gender: formData.gender
-        },
+      
+      // Prepare data for the save API
+      const clientToSave = {
+        uid: this.client.uid,  // Include the client UID for update
+        userUid: this.client.user.uid,  // Include the user UID for update
+        firstname: formData.firstname,
+        lastname: formData.lastname,
+        middleName: formData.middleName,
+        msisdn: formData.msisdn,
+        email: formData.email,
+        idNumber: formData.idNumber,
+        gender: formData.gender,
         occupation: formData.occupation,
         dob: formData.dob
       };
 
-      this.clientService.postClientData(updatedClient).subscribe({
+      this.clientService.updateClient(clientToSave).subscribe({
         next: (response) => {
           this.loading = false;
           this.success = 'Client updated successfully!';
@@ -122,7 +144,7 @@ export class UpdateClientComponent implements OnInit {
         },
         error: (err) => {
           this.loading = false;
-          this.error = 'Failed to update client. Please try again.';
+          this.error = err.error?.message || 'Failed to update client. Please try again.';
           console.error('Error updating client:', err);
         }
       });
@@ -139,7 +161,7 @@ export class UpdateClientComponent implements OnInit {
   }
 
   onCancel(): void {
-    this.router.navigate(['/clients']);
+    this.router.navigate(['/clients',this.clientUid]);
   }
 
   getFieldError(fieldName: string): string {
