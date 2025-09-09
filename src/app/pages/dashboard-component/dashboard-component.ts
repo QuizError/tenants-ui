@@ -1,16 +1,20 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { PropertiesService } from '../../services/properties-service';
 import { OwnershipService } from '../../services/ownership-service';
 import { UnitSectionService } from '../../services/unit-section-service';
 import { ClientService } from '../../services/client-service';
 import { RentalService } from '../../services/rental-service';
+import { BillService } from '../../services/bill-service';
 
 @Component({
   selector: 'app-dashboard-component',
-  imports: [],
+  standalone: true,
+  imports: [CommonModule],
   templateUrl: './dashboard-component.html',
-  styleUrl: './dashboard-component.css'
+  styleUrls: ['./dashboard-component.css'],
+  providers: [PropertiesService, OwnershipService, UnitSectionService, ClientService, RentalService, BillService]
 })
 export class DashboardComponent implements OnInit {
 
@@ -26,13 +30,16 @@ export class DashboardComponent implements OnInit {
 
   groupsData: any[] = [];
 
+  unpaidBills: any[] = [];
+
   constructor(
     private propertiesService: PropertiesService,
-    private unitSectionService: UnitSectionService, 
-    private cdr: ChangeDetectorRef , 
     private ownershipService: OwnershipService,
-    private clientService: ClientService, 
+    private unitSectionService: UnitSectionService,
+    private clientService: ClientService,
     private rentalService: RentalService,
+    private billService: BillService,
+    private cdr: ChangeDetectorRef,
     private router: Router){}
 
   user:any;
@@ -46,18 +53,22 @@ export class DashboardComponent implements OnInit {
       if (cachedProperties) {
         this.propertiesData = JSON.parse(cachedProperties);
       }
-      this.getMyProperties(this.user.uid)
-      this.getMyAvailableSections(this.user.uid)
-      this.getMyClients(this.user.uid)
-      this.getMyPropertiesRentalsEndingThisMonth(this.user.uid)
-      this.currentMonth = this.getCurrentMonth();
-      // console.log(this.user.uid)
+      this.loadDashboardData();
+      this.loadUnpaidBills();
     
     }
 
     
   }
 
+  loadDashboardData() {
+    this.getMyProperties(this.user.uid)
+    this.getMyAvailableSections(this.user.uid)
+    this.getMyClients(this.user.uid)
+    this.getMyPropertiesRentalsEndingThisMonth(this.user.uid)
+    this.currentMonth = this.getCurrentMonth();
+    this.getMyGroups(this.user.uid)
+  }
 
   getMyProperties(uid:string){
       this.propertiesService.getMyProprtiesByUserUid(uid).subscribe(res=>{
@@ -92,7 +103,6 @@ export class DashboardComponent implements OnInit {
   })
 }
 
-
   getMyGroups(uid:string){
     this.ownershipService.getMyGroupsByUserUid(uid).subscribe(res=>{
       this.groupsData = res; 
@@ -100,6 +110,24 @@ export class DashboardComponent implements OnInit {
       localStorage.setItem('userGroups',JSON.stringify(this.groupsData))
       this.cdr.detectChanges();
     })
+  }
+
+  loadUnpaidBills() {
+    if (!this.user?.uid) return;
+    
+    this.billService.getUnpaidBills(this.user.uid).subscribe({
+      next: (bills) => {
+        this.unpaidBills = bills || [];
+      },
+      error: (error) => {
+        console.error('Error fetching unpaid bills:', error);
+        this.unpaidBills = [];
+      }
+    });
+  }
+
+  getTotalUnpaidBills(): number {
+    return this.unpaidBills.reduce((total, bill) => total + (bill.softwareBill || 0), 0);
   }
 
   getCurrentMonth(): string {

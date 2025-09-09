@@ -125,7 +125,7 @@ export class ViewClientComponent implements OnInit {
 
   editClient(): void {
     if (this.clientData) {
-      this.router.navigate(['/clients/edit', this.clientData.uid]);
+      this.router.navigate(['/update-client/', this.clientData.uid]);
     }
   }
 

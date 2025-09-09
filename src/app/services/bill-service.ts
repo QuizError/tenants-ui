@@ -20,6 +20,10 @@ export class BillService {
     return this.http.get<Bill[]>(`${this.baseUrl}/my-properties/${uid}`);
   }
 
+  getUnpaidBills(uid: string) {
+    return this.http.get<Bill[]>(`${this.baseUrl}/my-unpaid/${uid}`);
+  }
+
   getBillByUid(uid: string) {
     return this.http.get<Bill>(`${this.baseUrl}/${uid}`);
   }

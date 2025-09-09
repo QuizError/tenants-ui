@@ -45,4 +45,49 @@
     </div>
 
   </div>
+
+  <!-- Second Row -->
+  <div class="row g-4 mt-2">
+    <!-- Unpaid Software Commission Card -->
+    <div class="col-md-6">
+      <div class="card shadow-sm border-0 h-100">
+        <div class="card-header bg-light">
+          <h5 class="card-title mb-0">My software fees</h5>
+        </div>
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table table-hover mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th>Group Name</th>
+                  <th class="text-end">Amount Collected</th>
+                  <th class="text-end">Software Bill</th>
+                  <th class="text-end">Currency</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let bill of unpaidBills; let i = index">
+                  <td>{{ bill.groupOwnershipName }}</td>
+                  <td class="text-end">{{ bill.totalBillAmount | number:'1.2-2' }}</td>
+                  <td class="text-end">{{ bill.softwareBill | number:'1.2-2' }}</td>
+                  <td class="text-end">{{ bill.currency }}</td>
+                </tr>
+                <tr *ngIf="unpaidBills.length === 0">
+                  <td colspan="2" class="text-center py-3">No unpaid software fees found</td>
+                </tr>
+              </tbody>
+              <!-- <tfoot class="table-light" *ngIf="unpaidBills.length > 0">
+                <tr>
+                  <th>Total</th>
+                  <th class="text-end">
+                    {{ getTotalUnpaidBills() | number:'1.2-2' }} {{ unpaidBills[0]?.currency || 'TZS' }}
+                  </th>
+                </tr>
+              </tfoot> -->
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
