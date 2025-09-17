@@ -10,12 +10,14 @@ import { ConfigService } from './config.service';
 export class UserService {
   
   private baseUrl: string;
+  private userBaseUrl: string;
 
   constructor(
     private http: HttpClient,
     private configService: ConfigService
   ) {
     this.baseUrl = `${this.configService.apiBaseUrl}/api/login`;
+    this.userBaseUrl = `${this.configService.apiBaseUrl}/users`;
   }
 
   postLoginData(data: User){
@@ -24,6 +26,10 @@ export class UserService {
 
   getUserData(){
     return this.http.get<GroupOwnership []>(this.baseUrl);
+  }
+
+  getUserDataList(){
+    return this.http.get<User []>(this.userBaseUrl);
   }
 
   postUserData(data: User){

@@ -25,6 +25,12 @@
             <td mat-cell *matCellDef="let element"> {{element.clientName}} </td>
           </ng-container>
 
+          <!-- Property Name Column -->
+          <ng-container matColumnDef="propertyName">
+            <th mat-header-cell *matHeaderCellDef> Property </th>
+            <td mat-cell *matCellDef="let element"> {{element.propertyName}} </td>
+          </ng-container>
+
           <!-- Unit Name Column -->
           <ng-container matColumnDef="unitName">
             <th mat-header-cell *matHeaderCellDef> Unit </th>
@@ -37,24 +43,6 @@
             <td mat-cell *matCellDef="let element"> {{element.unitSectionName}} </td>
           </ng-container>
 
-          <!-- Start Date Column -->
-          <ng-container matColumnDef="startDate">
-            <th mat-header-cell *matHeaderCellDef> Start Date </th>
-            <td mat-cell *matCellDef="let element"> {{element.startDate | date: 'mediumDate'}} </td>
-          </ng-container>
-
-          <!-- End Date Column -->
-          <ng-container matColumnDef="endDate">
-            <th mat-header-cell *matHeaderCellDef> End Date </th>
-            <td mat-cell *matCellDef="let element"> {{element.endDate | date: 'mediumDate'}} </td>
-          </ng-container>
-
-          <!-- Price Column -->
-          <ng-container matColumnDef="price">
-            <th mat-header-cell *matHeaderCellDef> Price </th>
-            <td mat-cell *matCellDef="let element"> {{element.price | currency:element.currency}} </td>
-          </ng-container>
-
           <!-- Status Column -->
           <ng-container matColumnDef="rentalStatus">
             <th mat-header-cell *matHeaderCellDef> Status </th>
@@ -64,6 +52,27 @@
               </span>
             </td>
           </ng-container>
+
+          <!-- Price Column -->
+          <ng-container matColumnDef="clientMobile">
+            <th mat-header-cell *matHeaderCellDef> Mobile</th>
+            <td mat-cell *matCellDef="let element"> {{element.clientMobile}} </td>
+          </ng-container>
+
+          <!-- End Date Column -->
+          <ng-container matColumnDef="endDate">
+            <th mat-header-cell *matHeaderCellDef> End Date </th>
+            <td mat-cell *matCellDef="let element"> {{element.endDate | date: 'mediumDate'}} </td>
+          </ng-container>
+
+          <!-- Days Left Column -->
+          <ng-container matColumnDef="daysLeft">
+            <th mat-header-cell *matHeaderCellDef> Days Left </th>
+            <td mat-cell *matCellDef="let element"> 
+              {{getDaysLeft(element.endDate)}}
+            </td>
+          </ng-container>
+
 
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
           <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>

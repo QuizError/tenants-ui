@@ -25,6 +25,20 @@ import { ViewPaymentComponent } from './pages/payment/view-payment-component/vie
 import { AddUnitSectionComponent } from './pages/unit-section/add-unit-section-component/add-unit-section-component';
 import { UnitSectionsComponent } from './pages/unit-section/unit-sections-component/unit-sections-component';
 import { UpdateUnitSectionComponent } from './pages/unit-section/update-unit-section-component/update-unit-section-component';
+import { UsersComponent } from './pages/user/users-component/users-component';
+import { ViewUserComponent } from './pages/user/view-user-component/view-user-component';
+import { UpdateUserComponent } from './pages/user/update-user-component/update-user-component';
+import { MembershipsComponent } from './pages/membership/memberships-component/memberships-component';
+import { ViewMembershipComponent } from './pages/membership/view-membership-component/view-membership-component';
+import { UpdateMembershipComponent } from './pages/membership/update-membership-component/update-membership-component';
+import { MembershipManagementComponent } from './pages/membership/membership-management/membership-management.component';
+import { UserListComponent } from './pages/users/user-list/user-list.component';
+import { UserFormComponent } from './pages/users/user-form/user-form.component';
+import { UserViewComponent } from './pages/users/user-view/user-view.component';
+import { AllGroupsComponent } from './pages/ownership/all-groups-component/all-groups-component';
+import { UpdateGroupOwnershipComponent } from './pages/ownership/update-group-ownership-component/update-group-ownership-component';
+import { AddGroupOwnershipComponent } from './pages/ownership/add-group-ownership-component/add-group-ownership-component';
+import { AddMembershipComponent } from './pages/membership/add-membership-component/add-membership-component';
 
 export const routes: Routes = [
     {
@@ -45,8 +59,67 @@ export const routes: Routes = [
                 component: DashboardComponent
             },
             {
-                path: 'employee',
-                component: EmployeeComponent
+                path: 'users',
+                children: [
+                    { path: '', component: UserListComponent },
+                    { path: 'add', component: UserFormComponent },
+                    { 
+                        path: ':id', 
+                        children: [
+                            { path: '', redirectTo: 'view', pathMatch: 'full' },
+                            { path: 'view', component: UserViewComponent },
+                            { path: 'edit', component: UserFormComponent }
+                        ]
+                    }
+                ]
+            },
+            {
+                path: 'user/:uid',
+                component: ViewUserComponent
+            },
+            {
+                path: 'update-user/:uid',
+                component: UpdateUserComponent
+            },
+            {
+                path: 'groups',
+                component: AllGroupsComponent,
+                title: 'Manage Groups'
+            },
+            { 
+                path: 'add-group',
+                component: AddGroupOwnershipComponent,
+                title: 'Add Group'
+            },
+            {
+                path: 'update-group/:uid',
+                component: UpdateGroupOwnershipComponent,
+                title: 'Edit Group'
+            },
+            {
+                path: 'group/:uid',
+                component: ViewMembershipComponent,
+                title: 'View Group'
+            },
+            {
+                path: 'memberships',
+                component: MembershipManagementComponent,
+                title: 'Manage Memberships'
+            },
+            { 
+                path: 'add-membership',
+                component: AddMembershipComponent,
+                title: 'Add Membership'
+            },
+            {
+                path: 'membership/:uid',
+                component: ViewMembershipComponent,
+                title: 'View Membership'
+            },
+            {
+                path: 'update-membership/:uid',
+                component: UpdateMembershipComponent,
+                title: 'Edit Membership'
             },
             {
                 path: 'ownership-groups',

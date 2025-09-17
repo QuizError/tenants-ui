@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ToastrModule } from 'ngx-toastr';
 import { HttpClientModule } from '@angular/common/http';
 import { RouterModule, Routes } from '@angular/router';
 
@@ -16,10 +17,15 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { AppComponent } from './app.component';
 import { PaymentsComponent } from './pages/payment/payments-component/payments-component';
 import { ViewPaymentComponent } from './pages/payment/view-payment-component/view-payment-component';
+import { GroupService } from './services/group.service';
 
 const routes: Routes = [
   { path: 'payments', component: PaymentsComponent },
@@ -37,6 +43,8 @@ const routes: Routes = [
     BrowserAnimationsModule,
     HttpClientModule,
     RouterModule.forRoot(routes),
+    FormsModule,
+    ReactiveFormsModule,
     // Angular Material Modules
     MatButtonModule,
     MatCardModule,
@@ -49,12 +57,17 @@ const routes: Routes = [
     MatSnackBarModule,
     MatSidenavModule,
     MatListModule,
+    MatAutocompleteModule,
+    MatInputModule,
+    MatFormFieldModule,
     // Import standalone components instead of declaring them
     AppComponent,
     PaymentsComponent,
     ViewPaymentComponent
   ],
-  providers: []
+  providers: [
+    GroupService
+  ],
   // No bootstrap here; app bootstraps via main.ts with bootstrapApplication(App, appConfig)
 })
 export class AppModule { }
