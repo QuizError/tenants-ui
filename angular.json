@@ -26,7 +26,10 @@
               "node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
               "./node_modules/bootstrap/dist/css/bootstrap.min.css"
             ],
-	    "outputPath":"../../www/html/"
+	    "outputPath": {
+    		"base": "../../www/html/",
+    		"browser": ""
+            }
           },
           "configurations": {
             "production": {
@@ -43,7 +46,6 @@
                 }
               ],
               "outputHashing": "all",
-	      "baseHref": "./"
             },
             "development": {
               "optimization": false,
