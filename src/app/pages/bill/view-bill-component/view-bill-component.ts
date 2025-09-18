@@ -86,6 +86,7 @@ export class ViewBillComponent implements OnInit {
           customerName: 'Sample Customer',
           customerUid: '00000000-0000-0000-0000-000000000000'
         };
+        this.paymentForm.paidAmount = this.bill?.totalAMount ?? 2000000;
         this.paymentForm.billReferenceNumber = this.bill?.billReferenceNumber ?? '';
         this.paymentForm.currency = this.bill?.currency ?? 'TZS';
         this.loading = false;
@@ -97,6 +98,7 @@ export class ViewBillComponent implements OnInit {
   openPaymentModal(): void {
     if (!this.bill) return;
     // Ensure bill-derived fields are set
+    this.paymentForm.paidAmount = this.bill?.totalAMount ?? 2000000;
     this.paymentForm.billReferenceNumber = this.bill?.billReferenceNumber ?? '';
     this.paymentForm.currency = this.bill?.currency ?? 'TZS';
     this.paymentError = null;

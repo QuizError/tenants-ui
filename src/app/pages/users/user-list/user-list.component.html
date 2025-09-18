@@ -1,0 +1,46 @@
+{{ ... }}
+      <div class="card">
+        <div class="card-body">
+          <!-- Search and Filters -->
+          <div class="row mb-3">
+            <div class="col-md-4">
+              <div class="input-group">
+                <input type="text" class="form-control" placeholder="Search users..." 
+                       [(ngModel)]="searchTerm" (keyup.enter)="onSearch()">
+                <button class="btn btn-outline-secondary" type="button" (click)="onSearch()">
+                  <i class="fas fa-search"></i>
+                </button>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <select class="form-select" [(ngModel)]="filters.userType" (change)="applyFilters()">
+                <option [ngValue]="null">All User Types</option>
+                <option value="TENANT">Tenant</option>
+                <option value="ADMIN">Admin</option>
+                <option value="FINANCE">Finance</option>
+                <option value="OWNER">Owner</option>
+                <!-- Add other user types as needed -->
+              </select>
+            </div>
+            <div class="col-md-3">
+              <select class="form-select" [(ngModel)]="filters.active" (change)="applyFilters()">
+                <option [ngValue]="null">All Statuses</option>
+                <option [ngValue]="true">Active</option>
+                <option [ngValue]="false">Inactive</option>
+              </select>
+            </div>
+            <div class="col-md-2">
+              <button class="btn btn-outline-secondary w-100" (click)="resetFilters()">
+                <i class="fas fa-undo me-1"></i> Reset
+              </button>
+            </div>
+          </div>
+          <table>
+            <tr *ngFor="let user of users">
+              <td>{{ user.firstname }} {{ user.middleName || '' }} {{ user.lastname }}</td>
+              <td>{{ user.email }}</td>
+              <td>{{ formatPhoneNumber(user.msisdn) }}</td>
+              <td>{{ user.idNumber || 'N/A' }}</td>
+            </tr>
+          </table>
+{{ ... }}
