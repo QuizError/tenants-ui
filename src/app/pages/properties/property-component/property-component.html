@@ -19,6 +19,7 @@
             <th>Ownership Type</th>
             <th>Location</th>
             <th>Functional</th>
+            <th>Service Charge</th>
             <th class="text-center">Action</th>
           </tr>
         </thead>
@@ -32,6 +33,14 @@
             <td>
               <span class="badge bg-success-subtle text-success px-3 py-2 rounded-pill">
                 {{property.functionStatus}}
+              </span>
+            </td>
+            <td>
+              <span *ngIf="property.hasServiceCharge" class="badge bg-info-subtle text-info px-3 py-2 rounded-pill">
+                {{property.serviceChargeAmount}} {{property.serviceChargeCurrency}}
+              </span>
+              <span *ngIf="!property.hasServiceCharge" class="badge bg-secondary-subtle text-secondary px-3 py-2 rounded-pill">
+                No Charge
               </span>
             </td>
             <td class="text-center">

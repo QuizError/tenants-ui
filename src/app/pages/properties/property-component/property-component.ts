@@ -1,12 +1,14 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { PropertiesService } from '../../../services/properties-service';
 import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-property-component',
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './property-component.html',
-  styleUrl: './property-component.css'
+  styleUrls: ['./property-component.css'],
+  standalone: true
 })
 export class PropertyComponent implements OnInit {
 

@@ -44,15 +44,47 @@
           <input type="date" class="form-control rounded-pill shadow-sm"  formControlName="startFunction" required>
         </div>
 
-        <!-- Functional Status -->
+        <!-- Service Charge Section -->
+        <div class="col-12 mt-4">
+          <h6 class="fw-bold border-bottom pb-2 mb-3">Service Charge Information</h6>
+        </div>
+
+        <div class="col-md-6">
+          <div class="form-check form-switch mb-3">
+            <input class="form-check-input" type="checkbox" id="hasServiceCharge" formControlName="hasServiceCharge">
+            <label class="form-check-label fw-semibold" for="hasServiceCharge">Has Service Charge</label>
+          </div>
+        </div>
+
+        <div class="col-12">
+          <div class="row g-3" [class.d-none]="!addPropertyForm.get('hasServiceCharge')?.value">
+            <div class="col-md-4">
+              <label class="form-label fw-semibold">Service Charge Amount</label>
+              <input type="number" class="form-control rounded-pill shadow-sm" formControlName="serviceChargeAmount" min="0" step="0.01">
+            </div>
+            <div class="col-md-4">
+              <label class="form-label fw-semibold">Currency</label>
+              <select class="form-select rounded-pill shadow-sm" formControlName="serviceChargeCurrency" required>
+                <option value="" disabled selected>-- Select Currency --</option>
+                <option value="USD">USD</option>
+                <option value="TZS">TZS</option>
+              </select>
+            </div>
+            <div class="col-md-12">
+              <label class="form-label fw-semibold">Service Charge Description</label>
+              <textarea class="form-control shadow-sm" formControlName="serviceChargeDescription" rows="2"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Group Owning -->
         <div class="col-md-6">
           <label class="form-label fw-semibold">Group Owning</label>
           <select class="form-select rounded-pill shadow-sm"  formControlName="ownerUid" required>
             <option value="" disabled selected>-- Select Group --</option>
-            
-             @for (group of groupsData; track $index) {
-                <option [value]="group.uid">{{group.name}}</option>
-             }
+            @for (group of groupsData; track $index) {
+              <option [value]="group.uid">{{group.name}}</option>
+            }
           </select>
         </div>
 

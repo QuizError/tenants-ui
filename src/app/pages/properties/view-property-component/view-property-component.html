@@ -1,46 +1,151 @@
 <div class="container mt-5">
-  <div class="card shadow-sm rounded-4 p-4">
-    <h5 class="fw-bold mb-4">Details</h5>
-
-      <div class="row g-3">
-        
-        <div class="col-md-4">
-          <label class="form-label fw-semibold">Property Name</label>
-          <p>{{propertyData?.data?.name}}</p>
-        </div>
-
-        <div class="col-md-4">
-          <label class="form-label fw-semibold">Ownership Type</label>
-          <p>{{propertyData?.data?.ownershipType}}</p>
-        </div>
-
-        <div class="col-md-4">
-          <label class="form-label fw-semibold">Location</label>
-          <p>{{propertyData?.data?.location}}</p>
-        </div>
-
-        <div class="col-md-4">
-          <label class="form-label fw-semibold">Functional Status</label>
-          <p>{{propertyData?.data?.functionStatus}}</p>
-        </div>
-
-        <div class="col-md-4">
-          <label class="form-label fw-semibold">Start Operations</label>
-          <p>{{propertyData?.data?.startFunction}}</p>
-        </div>
-
+  <!-- Loading State -->
+  @if (isLoading) {
+    <div class="text-center py-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
       </div>
+      <p class="mt-2">Loading property details...</p>
+    </div>
+  }
 
-      <div class="row g-3">
-        <app-units-component [propertyUid]="propertyData?.data?.uid">
+  <!-- Error State -->
+  @if (error) {
+    <div class="alert alert-danger" role="alert">
+      <i class="bi bi-exclamation-triangle-fill me-2"></i>
+      {{ error }}
+      <button type="button" class="btn-close float-end" (click)="error = null" aria-label="Close"></button>
+    </div>
+  }
 
-        </app-units-component>
-      </div>
-
-      <div class="d-flex justify-content-end gap-2 mt-4">
-        <button type="button" class="btn btn-outline-secondary rounded-pill px-4 shadow-sm" (click)="onCancel()">
-          <i class="bi bi-x-circle"></i> Cancel
+  <!-- Property Details -->
+  @if (propertyData?.data) {
+    <div class="card shadow-sm rounded-4 p-4">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h5 class="fw-bold mb-0">Property Details</h5>
+        <button class="btn btn-outline-primary btn-sm" (click)="onCancel()">
+          <i class="bi bi-arrow-left me-1"></i> Back to Properties
         </button>
       </div>
-  </div>
-</div> 
+
+      <!-- Main Content Row -->
+      <div class="row g-4">
+        <!-- Basic Information Column -->
+        <div class="col-lg-6">
+          <div class="card h-100">
+            <div class="card-body">
+              <h6 class="fw-bold border-bottom pb-2 mb-3">Basic Information</h6>
+              
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label fw-semibold text-muted small mb-1">Property Name</label>
+                  <p class="mb-0">{{ propertyData.data.name || 'N/A' }}</p>
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label fw-semibold text-muted small mb-1">Ownership Type</label>
+                  <p class="mb-0">
+                    <span class="badge bg-primary bg-opacity-10 text-primary">
+                      {{ propertyData.data.ownershipType || 'N/A' }}
+                    </span>
+                  </p>
+                </div>
+
+                <div class="col-12">
+                  <label class="form-label fw-semibold text-muted small mb-1">Location</label>
+                  <p class="mb-0">{{ propertyData.data.location || 'N/A' }}</p>
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label fw-semibold text-muted small mb-1">Status</label>
+                  <p class="mb-0">
+                    @switch(propertyData.data.functionStatus) {
+                      @case('ACTIVE') {
+                        <span class="badge bg-success bg-opacity-10 text-success">Active</span>
+                      }
+                      @case('ON_MAINTENANCE') {
+                        <span class="badge bg-warning bg-opacity-10 text-warning">On Maintenance</span>
+                      }
+                      @case('ON_DEVELOPMENT') {
+                        <span class="badge bg-info bg-opacity-10 text-info">On Development</span>
+                      }
+                      @default {
+                        <span class="badge bg-secondary bg-opacity-10 text-secondary">{{ propertyData.data.functionStatus || 'N/A' }}</span>
+                      }
+                    }
+                  </p>
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label fw-semibold text-muted small mb-1">Start Operations</label>
+                  <p class="mb-0">{{ formatDate(propertyData.data.startFunction) }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Service Charge Column -->
+        <div class="col-lg-6">
+          <div class="card h-100">
+            <div class="card-body">
+              <h6 class="fw-bold border-bottom pb-2 mb-3">Service Charge Information</h6>
+              
+              <div class="row g-3">
+                <div class="col-12">
+                  <label class="form-label fw-semibold text-muted small mb-1">Service Charge</label>
+                  <p class="mb-0">
+                    @if (propertyData.data.hasServiceCharge) {
+                      <span class="badge bg-success bg-opacity-10 text-success">Enabled</span>
+                    } @else {
+                      <span class="badge bg-secondary bg-opacity-10 text-secondary">Not Configured</span>
+                    }
+                  </p>
+                </div>
+
+                @if (propertyData.data.hasServiceCharge) {
+                  <div class="col-md-6">
+                    <label class="form-label fw-semibold text-muted small mb-1">Amount</label>
+                    <p class="mb-0">
+                      {{ propertyData.data.serviceChargeAmount | number:'1.2-2' }} 
+                      {{ propertyData.data.serviceChargeCurrency || 'USD' }}
+                    </p>
+                  </div>
+
+                  @if (propertyData.data.serviceChargeDescription) {
+                    <div class="col-12">
+                      <label class="form-label fw-semibold text-muted small mb-1">Description</label>
+                      <p class="mb-0">{{ propertyData.data.serviceChargeDescription }}</p>
+                    </div>
+                  }
+                } @else {
+                  <div class="col-12">
+                    <div class="alert alert-light mb-0">
+                      <i class="bi bi-info-circle me-2"></i>
+                      No service charge information available for this property.
+                    </div>
+                  </div>
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Units Section - Full Width -->
+      <div class="card mt-4">
+        <div class="card-body">
+          <h6 class="fw-bold border-bottom pb-2 mb-3">Units</h6>
+          <app-units-component [propertyUid]="propertyData.data.uid"></app-units-component>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
+        <button type="button" class="btn btn-outline-secondary rounded-pill px-4 shadow-sm" (click)="onCancel()">
+          <i class="bi bi-x-circle me-1"></i> Close
+        </button>
+      </div>
+    </div>
+  }
+</div>

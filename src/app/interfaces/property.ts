@@ -6,4 +6,9 @@ export interface Property {
     ownershipType:string,
     ownerUid:string,
     uid: string,
+    hasServiceCharge:boolean,
+    serviceChargeAmount:number,
+    serviceChargeCurrency:string,
+    serviceChargeDescription:string,
+    
 }

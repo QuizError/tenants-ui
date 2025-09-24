@@ -8,7 +8,7 @@ import { PropertiesService } from '../../../services/properties-service';
   selector: 'app-add-property-component',
   imports: [ReactiveFormsModule],
   templateUrl: './add-property-component.html',
-  styleUrl: './add-property-component.css'
+  styleUrls: ['./add-property-component.css']
 })
 export class AddPropertyComponent implements OnInit {
 
@@ -21,14 +21,35 @@ export class AddPropertyComponent implements OnInit {
     private fb: FormBuilder,
     private propertyService: PropertiesService, 
     private ownershipService: OwnershipService){
-    this.addPropertyForm = fb.group({
-      name:[''],
-      ownershipType:[''],
-      ownerUid:[''],
-      startFunction:[''],
-      location:[''],
-      functionStatus:[''],
-    })
+    this.addPropertyForm = this.fb.group({
+      name: [''],
+      ownershipType: [''],
+      ownerUid: [''],
+      startFunction: [''],
+      location: [''],
+      functionStatus: [''],
+      hasServiceCharge: [false],
+      serviceChargeAmount: [{value: 0, disabled: true}],
+      serviceChargeCurrency: [{value: '', disabled: true}],
+      serviceChargeDescription: [{value: '', disabled: true}]
+    });
+
+    // Watch for changes to hasServiceCharge
+    this.addPropertyForm.get('hasServiceCharge')?.valueChanges.subscribe(hasServiceCharge => {
+      const serviceChargeAmount = this.addPropertyForm.get('serviceChargeAmount');
+      const serviceChargeCurrency = this.addPropertyForm.get('serviceChargeCurrency');
+      const serviceChargeDescription = this.addPropertyForm.get('serviceChargeDescription');
+      
+      if (hasServiceCharge) {
+        serviceChargeAmount?.enable();
+        serviceChargeCurrency?.enable();
+        serviceChargeDescription?.enable();
+      } else {
+        serviceChargeAmount?.disable();
+        serviceChargeCurrency?.disable();
+        serviceChargeDescription?.disable();
+      }
+    });
   }
 
   user:any;
