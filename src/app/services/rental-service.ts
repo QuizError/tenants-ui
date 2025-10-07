@@ -28,6 +28,10 @@ export class RentalService {
     return this.http.get<Rental[]>(`${this.baseUrl}/contract-end/owner/${uid}`);
   }
 
+  getExpiredPropertyRentalsContractsByOwnerUid(uid: string) {
+    return this.http.get<Rental[]>(`${this.baseUrl}/contract-expired/owner/${uid}`);
+  }
+
   getRentalsByClientUid(uid: string) {
     return this.http.get<Rental[]>(`${this.baseUrl}/client/${uid}`);
   }

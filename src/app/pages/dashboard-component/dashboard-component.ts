@@ -23,6 +23,8 @@ export class DashboardComponent implements OnInit {
   availableSectionData: any[] = [];
 
   endindRentalsData: any[] = [];
+
+  expiredRentalsData: any[] = [];
   
   currentMonth: string | undefined;
 
@@ -66,6 +68,7 @@ export class DashboardComponent implements OnInit {
     this.getMyAvailableSections(this.user.uid)
     this.getMyClients(this.user.uid)
     this.getMyPropertiesRentalsEndingThisMonth(this.user.uid)
+    this.getExpiredPropertyRentalsContractsByOwnerUid(this.user.uid)
     this.currentMonth = this.getCurrentMonth();
     this.getMyGroups(this.user.uid)
   }
@@ -96,12 +99,20 @@ export class DashboardComponent implements OnInit {
   }
 
   getMyPropertiesRentalsEndingThisMonth(uid:string){
-    this.rentalService.getPropertyRentalsEndingThisMonthByOwnerUid(uid).subscribe(res=>{
-    this.endindRentalsData = res;
-    // console.log(this.endindRentalsData.length)   
-    this.cdr.detectChanges();
-  })
-}
+      this.rentalService.getPropertyRentalsEndingThisMonthByOwnerUid(uid).subscribe(res=>{
+      this.endindRentalsData = res;
+      // console.log(this.endindRentalsData.length)   
+      this.cdr.detectChanges();
+    })
+  }
+
+  getExpiredPropertyRentalsContractsByOwnerUid(uid:string){
+      this.rentalService.getExpiredPropertyRentalsContractsByOwnerUid(uid).subscribe(res=>{
+      this.expiredRentalsData = res;
+      console.log(`Expired contracts are ${this.expiredRentalsData}`)   
+      this.cdr.detectChanges();
+    })
+  }
 
   getMyGroups(uid:string){
     this.ownershipService.getMyGroupsByUserUid(uid).subscribe(res=>{
@@ -146,7 +157,10 @@ export class DashboardComponent implements OnInit {
     this.router.navigateByUrl('clients')
   }
 
-  onViewRentals(){
-    this.router.navigateByUrl('rentals')
+  // onViewRentals(){
+  //   this.router.navigateByUrl('rentals')
+  // }
+  onViewRentals(rentalType: 'ending' | 'expired' = 'ending') {
+    this.router.navigate(['/rentals'], { queryParams: { type: rentalType } });
   }
 }
