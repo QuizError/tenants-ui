@@ -39,6 +39,7 @@ export class AddClientComponent {
 
   ngOnInit(): void {
     const savedUser = localStorage.getItem('employeeApp');
+    console.log({savedUser});
     if (savedUser) {
       this.user = JSON.parse(savedUser);
       this.currentUserUid = this.user.uid;

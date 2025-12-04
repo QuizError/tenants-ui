@@ -5,22 +5,22 @@
 export const environment = {
   production: false,
   // API base URL - update this with your development API URL
-  apiUrl: 'http://backend.tmis.divinesolutions.co.tz',
-  // apiUrl: 'http://localhost:9231',
-  
+  // apiUrl: 'http://backend.tmis.divinesolutions.co.tz',
+  apiUrl: 'http://localhost:9231',
+
   // API endpoints
   endpoints: {
     payments: '/payments',
     bills: '/bills',
     // Add other endpoints as needed
   },
-  
+
   // Pagination defaults
   pagination: {
     defaultPageSize: 10,
     pageSizeOptions: [5, 10, 25, 100]
   },
-  
+
   // Application settings
   app: {
     name: 'TMIS',

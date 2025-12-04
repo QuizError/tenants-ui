@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ClientService } from '../../../services/client-service';
@@ -7,19 +7,34 @@ import { Client } from '../../../interfaces/client';
 import { Rental } from '../../../interfaces/rental';
 import { AddRentalModalComponent } from '../../rentals/add-rental-modal/add-rental-modal.component';
 import { of } from 'rxjs';
-import { catchError, finalize, timeout, switchMap } from 'rxjs/operators';
+import { catchError, finalize, timeout, switchMap, map } from 'rxjs/operators';
 import { UnitSectionService } from '../../../services/unit-section-service';
 import { UnitService } from '../../../services/unit-service';
 import { PropertiesService } from '../../../services/properties-service';
 import { OwnershipService } from '../../../services/ownership-service';
+import { MatButtonModule } from "@angular/material/button";
+import { MatIcon } from "@angular/material/icon";
+import { MatFormField, MatLabel } from "@angular/material/form-field";
+import { FormsModule } from '@angular/forms';
+import { MatInput } from "@angular/material/input";
+import { MatDialog } from '@angular/material/dialog';
+import { NoticeView } from '../../../shared/components/notice-view/notice-view';
 
 @Component({
   selector: 'app-view-client-component',
-  imports: [CommonModule, AddRentalModalComponent],
+  imports: [
+    CommonModule, FormsModule,
+    AddRentalModalComponent,
+    MatButtonModule, MatIcon,
+    MatFormField, MatLabel,
+    MatInput
+],
   templateUrl: './view-client-component.html',
   styleUrl: './view-client-component.css'
 })
 export class ViewClientComponent implements OnInit {
+
+  dialog = inject(MatDialog);
 
   clientData: Client | undefined;
   clientUid: string | null = null;
@@ -44,7 +59,13 @@ export class ViewClientComponent implements OnInit {
   // Safe tenant name for certificate display
   tenantNameForCert: string = '';
 
-  constructor(private router: Router, 
+  addingNotice = signal(false);
+  message = signal(undefined);
+  details = signal(undefined);
+  noticeType = signal(undefined);
+  rentalUid = signal(undefined);
+
+  constructor(private router: Router,
     private clientService: ClientService,
     private rentalService: RentalService,
     private cdr: ChangeDetectorRef,
@@ -75,10 +96,10 @@ export class ViewClientComponent implements OnInit {
 
   loadClientRentals(): void {
     if (!this.clientUid) return;
-    
+
     this.loadingRentals = true;
     this.rentalError = null;
-    
+
     this.rentalService.getRentalsByClientUid(this.clientUid).subscribe({
       next: (rentals) => {
         this.clientRentals = rentals;
@@ -421,5 +442,35 @@ export class ViewClientComponent implements OnInit {
       this.companyLogoUrl = '/tmis.png';
       this.cdr.detectChanges();
     }
+  }
+
+  issueNotice(rental: Rental){
+    this.addingNotice.set(!this.addingNotice());
+  }
+
+  saveNotice(rental: any){
+    const dto = {
+      message: this.message(),
+        details: this.details(),
+        noticeType: this.noticeType(),
+        rentalUid: rental.uid,
+        uid: null
+    };
+    this.clientService.issueNotice(dto)
+  }
+
+  async viewNotice(rental: Rental){
+    const notice = await this.clientService.getRentalNotice(rental);
+    console.log({notice});
+    const dialogRef = this.dialog.open(NoticeView, {
+      width: '75%',
+      data: notice
+    });
+    dialogRef.afterClosed().pipe(
+      map((data)=>{
+        console.log(data);
+
+      })
+    )
   }
 }

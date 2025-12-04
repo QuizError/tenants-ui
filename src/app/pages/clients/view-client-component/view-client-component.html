@@ -121,14 +121,23 @@
                       <span class="badge" [ngClass]="getRentalStateClass(rental.rentalStatus)">
                         {{ (rental.rentalStatus || 'ACTIVE') | titlecase }}
                       </span>
-                      <button
-                        class="icon-btn"
-                        *ngIf="isEligibleForContract(rental)"
-                        (click)="viewContract(rental.uid)"
-                        title="View Contract"
-                        aria-label="View Contract"
-                      >
-                        👁️
+                      @if(isEligibleForContract(rental)){
+                        <button class="icon-btn" mat-mini-fab
+                          (click)="viewContract(rental.uid)"
+                          title="View Contract" aria-label="View Contract"
+                        >
+                          <mat-icon>visibility_on</mat-icon>
+                        </button>
+                      }
+                      <button class="icon-btn" mat-mini-fab
+                        title="View Contract" aria-label="View Contract"
+                        (click)="issueNotice(rental)">
+                        <i class="material-icons">add_alert</i>
+                      </button>
+                      <button class="icon-btn" mat-mini-fab
+                        title="View Contract" aria-label="View Contract"
+                        (click)="viewNotice(rental)">
+                        <i class="material-icons">alert</i>
                       </button>
                     </div>
                   </div>
@@ -149,6 +158,41 @@
                       </div>
                     </div>
                   </div>
+                  @if(addingNotice()){
+                    <div class="col-md-12">
+                      <div class="row">
+                        <div class="col-md-6">
+                          <mat-form-field appearance="outline">
+                            <mat-label>Notice Message</mat-label>
+                            <textarea [(ngModel)]="message" matInput></textarea>
+                          </mat-form-field>
+                        </div>
+                        <div class="col-md-6">
+                          <mat-form-field appearance="outline">
+                            <mat-label>Notice Details</mat-label>
+                            <textarea [(ngModel)]="message" matInput></textarea>
+                          </mat-form-field>
+                        </div>
+                        <div class="col-md-6">
+                          <mat-form-field appearance="outline">
+                            <mat-label>Notice Details</mat-label>
+                            <input [(ngModel)]="message" matInput>
+                          </mat-form-field>
+                        </div>
+                        <div class="col-md-6">
+                          <mat-form-field appearance="outline">
+                            <mat-label>Notice Details</mat-label>
+                            <input [(ngModel)]="message" matInput>
+                          </mat-form-field>
+                        </div>
+                        <div class="col-md-12 text-end">
+                          <button (click)="saveNotice(rental)" mat-mini-fab>
+                            <mat-icon>save</mat-icon>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  }
                 </div>
               }
             </div>
