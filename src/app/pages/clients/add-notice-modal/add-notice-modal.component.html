@@ -1,0 +1,57 @@
+<div class="modal-overlay" *ngIf="isVisible" (click)="onClose()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>Add New Notice</h3>
+      <button class="close-btn" (click)="onClose()">&times;</button>
+    </div>
+    
+    <div class="modal-body">
+      <form (ngSubmit)="onSubmit()" #noticeForm="ngForm">
+        <div class="form-group">
+          <label for="noticeType">Notice Type</label>
+          <select 
+            id="noticeType" 
+            name="noticeType" 
+            [(ngModel)]="notice.noticeType" 
+            class="form-control"
+            required>
+            <option *ngFor="let type of noticeTypes" [value]="type">
+              {{ type }}
+            </option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label for="message">Message</label>
+          <input 
+            type="text" 
+            id="message" 
+            name="message" 
+            [(ngModel)]="notice.message" 
+            class="form-control"
+            placeholder="Enter a brief message"
+            required>
+        </div>
+        
+        <div class="form-group">
+          <label for="details">Details</label>
+          <textarea 
+            id="details" 
+            name="details" 
+            [(ngModel)]="notice.details" 
+            class="form-control"
+            rows="4"
+            placeholder="Enter detailed information about this notice"
+            required></textarea>
+        </div>
+        
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" (click)="onClose()">Cancel</button>
+          <button type="submit" class="btn btn-primary" [disabled]="!noticeForm.form.valid">
+            Create Notice
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
