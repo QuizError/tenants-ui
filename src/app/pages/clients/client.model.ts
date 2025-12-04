@@ -1,3 +1,5 @@
+import { BaseEntity } from "../../shared/global.interface";
+
 export enum NoticeType{
   Exit = "Exit",
   Warning = "Warning",
@@ -11,6 +13,7 @@ export enum NoticeType{
   RentIncrease = "RentIncrease"
 }
 
-export interface ClientNotice{
+export interface ClientNotice extends BaseEntity{
+  deatils: string;
   
 }

@@ -69,6 +69,6 @@ export class ClientService {
   }
 
   async getRentalNotice(rental: Rental){
-    return await lastValueFrom(this.http.get<any>(`${environment.apiUrl}/${rental.uid}`));
+    return await lastValueFrom(this.http.get<any>(`${environment.apiUrl}/client-notice/${rental.uid}`));
   }
 }

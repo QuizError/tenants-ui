@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { Client } from '../../../interfaces/client';
 import { ClientService } from '../../../services/client-service';
 import { Router, RouterModule } from '@angular/router';
+import { enumToObjectArray } from '../../../shared/helpers/utils.functions';
+import { NoticeType } from '../client.model';
 
 @Component({
   selector: 'app-clients-component',
@@ -17,7 +19,7 @@ export class ClientsComponent implements OnInit {
   loading: boolean = false;
   error: string = '';
 
-  currentUserUid: string = ''; 
+  currentUserUid: string = '';
   user: any;
 
   // Pagination state

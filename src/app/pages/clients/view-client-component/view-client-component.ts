@@ -19,6 +19,10 @@ import { FormsModule } from '@angular/forms';
 import { MatInput } from "@angular/material/input";
 import { MatDialog } from '@angular/material/dialog';
 import { NoticeView } from '../../../shared/components/notice-view/notice-view';
+import { MatAutocompleteModule } from "@angular/material/autocomplete";
+import { enumToObjectArray } from '../../../shared/helpers/utils.functions';
+import { NoticeType } from '../client.model';
+import { MatSelect } from '@angular/material/select';
 
 @Component({
   selector: 'app-view-client-component',
@@ -27,7 +31,7 @@ import { NoticeView } from '../../../shared/components/notice-view/notice-view';
     AddRentalModalComponent,
     MatButtonModule, MatIcon,
     MatFormField, MatLabel,
-    MatInput
+    MatInput, MatAutocompleteModule, MatSelect
 ],
   templateUrl: './view-client-component.html',
   styleUrl: './view-client-component.css'
@@ -64,6 +68,8 @@ export class ViewClientComponent implements OnInit {
   details = signal(undefined);
   noticeType = signal(undefined);
   rentalUid = signal(undefined);
+
+  noticeTypes = signal(enumToObjectArray(NoticeType));
 
   constructor(private router: Router,
     private clientService: ClientService,
